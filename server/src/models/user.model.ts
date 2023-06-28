@@ -1,39 +1,48 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
+import {UserInterface} from '../Interfaces/user.interface';
 
-const userSchema=new mongoose.Schema({
-    email:{
-        type:String,
-        required:true
+const userSchema = new mongoose.Schema<UserInterface>({
+    fullName: {
+        type: String,
+        minLength: [5, 'Minimum length for full name should be 5']
     },
-    fullName:{
-        type:String
+    email: {
+        type: String,
+        required: true,
+        unique: true
     },
-    password:{
-        type:String
+    password: {
+        type: String,
     },
-    jwt:{
-        type:String
+    roles: {
+        type: String,
+        enum: ['student', 'instructor', 'admin'],
+        default: 'student'
     },
-    roles:{
-        type:String,
-        enum:['student','instructor','admin'],
-        default:'student'
+    enrolledCourse: {
+        type: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Course'
+            }
+        ]
     },
-    fcm:{
-        type:String
-    }
+    jwt: {
+        type: String,
+    },
+    fcm: {
+        type: String,
+    },
+    resetPasswordToken: {
+        type: String
+    },
+    resetPasswordExpire: {
+        type: Date
+    },
+}, {
+    timestamps: true
+})
 
-},{timestamps:true})
+const User = mongoose.model<UserInterface>('User', userSchema);
 
-const User=mongoose.model('User',userSchema)
- export default User 
-
-
-
-
-
-
-
-
-
-//  476536484441-o280rmidu42ohamadmpj88rkp8c3e594.apps.googleusercontent.com
+export default User;
