@@ -6,7 +6,7 @@ import { errorHandler, notFound } from "./middlewares/errorHandler";
 import passport from "passport";
 import expressSession from "express-session";
 import cors from 'cors'
-
+import pasportMiddleware from './middlewares/passport.middleware'
 process.on("uncaughtException", (error: any) => {
   console.log(` Error:${error.message}`);
   console.log("shuttting down the server due to uncaughtException ");
@@ -19,7 +19,6 @@ const PORT = env.PORT;
 
 // connecting to the database
 connectDb();
-
 app.use(expressSession({
     secret: "test123#",
     resave: true,
@@ -36,6 +35,7 @@ app.use(passport.session());
 app.use(cors())
 
 // routes
+// app.use('/',)
 
 // error handlers
 app.use(errorHandler);
