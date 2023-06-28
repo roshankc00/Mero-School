@@ -5,7 +5,6 @@ export default  cleanEnv(process.env, {
     PORT:port(),
     GOOGLE_CLIENT_SECRET:str(),
     GOOGLE_CLIENT_ID:str(),
-    CLIENT_URL:str()
-
+    CLIENT_URL:str(),
 });
 
