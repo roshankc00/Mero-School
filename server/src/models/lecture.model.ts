@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import LectureInteface from '../Interfaces/lecture.interface';
+import {LectureInteface} from '../Interfaces/lecture.interface';
 
 const lectureSchema = new mongoose.Schema<LectureInteface>(
     {
