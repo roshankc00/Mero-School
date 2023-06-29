@@ -1,4 +1,4 @@
-import * as React from 'react';
+import {useState} from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -11,24 +11,36 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import SignInWithGoogle from '../components/Signin/index';
-
+import SignInWithGoogle from '../../components/Signin';
+import { postData } from '../../services/axios.service';
+import { useNavigate } from 'react-router-dom';
+import { errorToast, sucessToast } from '../../services/toastify.service';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
 export default function SignIn() {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const navigate=useNavigate()
+    const [data,setdata]=useState({})
+  const handleSubmit = async(event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    console.log(data)
+    const response=await postData('user/login',data)
+    console.log(response)
+    if(response.sucess){
+        navigate('/dashboard')
+        sucessToast(response.message)   
+    }
+    else{
+        errorToast(response.message)
+    } 
   };
 
   return (
     <ThemeProvider theme={defaultTheme}>
+      <div className='flex justify-center align-content-center container ms-5'>
+
+      
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
@@ -54,6 +66,8 @@ export default function SignIn() {
               name="email"
               autoComplete="email"
               autoFocus
+              onChange={(e)=>setdata({...data,email:e.target.value})}
+
             />
             <TextField
               margin="normal"
@@ -64,10 +78,7 @@ export default function SignIn() {
               type="password"
               id="password"
               autoComplete="current-password"
-            />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
+              onChange={(e)=>setdata({...data,password:e.target.value})}
             />
             <Button
               type="submit"
@@ -85,7 +96,7 @@ export default function SignIn() {
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href="/signup" variant="body2">
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>
@@ -94,6 +105,7 @@ export default function SignIn() {
         </Box>
        
       </Container>
+      </div>
     </ThemeProvider>
   );
 }

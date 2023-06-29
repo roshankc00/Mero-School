@@ -1,20 +1,19 @@
 import './App.css'
-import Button from  '@mui/material/Button'
-import {Router,BrowserRouter,Route,NavLink} from 'react-router-dom'
-import {GoogleOAuthProvider} from '@react-oauth/google'
-import SignIn from './pages/Signin'
+import {Route,Routes} from 'react-router-dom'
+import SignIn from './pages/Signin/index'
+import Dashboard from './pages/Dashboard'
+import SignUp from './pages/Signup'
+import { ToastContainer} from 'react-toastify';
 function App() {
 
   return (
     <>
-    <BrowserRouter>
-    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}> 
-    <SignIn/>
-
- from client 
- <Button> click me </Button>
-    </GoogleOAuthProvider>
-    </BrowserRouter>
+    <Routes>
+      <Route path='/' element={<SignIn/>}/>
+      <Route path='/signup' element={<SignUp/>}/>
+      <Route path='/dashboard' element={<Dashboard/>}/>
+    </Routes>
+    <ToastContainer />
     </>
   )
 }
