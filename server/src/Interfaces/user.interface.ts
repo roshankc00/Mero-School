@@ -11,10 +11,10 @@ export interface UserInterface extends Document {
     email: string;
     password: string;
     roles: string;
-    resetPasswordToken?: string;
+    resetPasswordToken: string;
     jwt: string;
     fcm: string;
-    resetPasswordExpire: Date;
+    resetDateExpire: Date;
     enrolledCourse: mongoose.Schema.Types.ObjectId[];
 }
 

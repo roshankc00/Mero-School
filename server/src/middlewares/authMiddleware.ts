@@ -4,7 +4,8 @@ import jwt from 'jsonwebtoken'
 import validateMongodbId from '../utils/validateMongoDbId'
 import env from '../utils/validateEnv'
 import User from '../models/user.model'
-import { CustomRequest } from '../Interfaces/user.interface'
+import { CustomRequest, UserDocument, UserInterface } from '../Interfaces/user.interface'
+
 
 export const checkAuth=asyncHandler(async(req:CustomRequest,res:Response,next:NextFunction)=>{
     try {

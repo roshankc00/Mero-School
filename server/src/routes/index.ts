@@ -5,7 +5,7 @@ const router=express.Router()
  
 
 router.use('/auth',authRoute)
- router.unsubscribe('/user',userRoute)
+router.use('/api/v1/user',userRoute)
 
 
 export default router;

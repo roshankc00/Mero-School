@@ -13,7 +13,6 @@ export const errorHandler=async(error:Error,req:Request,res:Response,next:NextFu
     res.status(statusCode).json({
         sucess:false,
         message:error?.message,
-        error
-
+                 
     })
 }

@@ -22,6 +22,8 @@ const PORT = env.PORT || 7000;
 
 // connecting to the database
 connectDb();
+
+
 app.use(expressSession({ 
     secret: "test123#",
     resave: true,
@@ -31,6 +33,7 @@ app.use(expressSession({
   })
 );
 
+// middlewares 
 app.use(express.json());
 passportInitialize();
 app.use(passport.initialize());
@@ -39,11 +42,13 @@ app.use(cors())
 
 
 // routes
-
 app.use(authRoute)
 // error handlers
 app.use(errorHandler);
 app.use(notFound);
+
+
+
 const server = app.listen(PORT, () => {
   console.log(`Listening at the port ${PORT}`);
 });

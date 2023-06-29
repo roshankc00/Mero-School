@@ -37,7 +37,7 @@ const userSchema = new mongoose.Schema<UserDocument>({
     resetPasswordToken: {
         type: String
     },
-    resetPasswordExpire: {
+    resetDateExpire: {
         type: Date
     },
 }, {
@@ -71,5 +71,5 @@ userSchema.pre(
         
         
     }
-    const User = mongoose.model<any>('User', userSchema);
+    const User = mongoose.model<UserDocument>('User', userSchema);
     export default User;
