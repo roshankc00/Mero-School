@@ -1,14 +1,12 @@
 
-const index = () => {
+const Dashboard = () => {
+  const cookie=document.cookie;
+  // console.log(cookie.jwtToken)
+  cookie.split(';')
+  console.log(cookie,"second")
   return (
-    <>
-    kxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-    <div className='text-bold test-3x'>
-        Roshan
-dmmmmmmmmmmm
-    </div>
-    </>
+    <div>Dashboard</div>
   )
 }
 
-export default index
+export default Dashboard 

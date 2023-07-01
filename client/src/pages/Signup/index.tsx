@@ -11,7 +11,7 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { postData } from '../../services/axios.service';
 import { useNavigate } from 'react-router-dom';
-import { sucessToast } from '../../services/toastify.service';
+import { errorToast, sucessToast } from '../../services/toastify.service';
 function Copyright(props:any) {
 
 
@@ -48,6 +48,8 @@ export default function SignUp() {
         console.log("created")
         navigate('/');
         sucessToast(response.message)
+    }else{
+        errorToast(response.message)
     }
   };
 

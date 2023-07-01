@@ -55,10 +55,20 @@ export const loginUser=asyncHandler(async(req:Request,res:Response)=>{
             email
         }
         const token=jwt.sign(tokenData,env.SECRET)
+        const updatedUser=await User.findOneAndUpdate({email},{
+            $set :{
+                jwt:token
+            }
+        });
+
+
         res.status(200).json({
             sucess:true,
             message:"user login sucessFully",
-            token
+            data:{
+                token,
+                role:user.roles
+            }
         })        
     } catch (error:any) {
         throw new Error(error)
@@ -68,6 +78,7 @@ export const loginUser=asyncHandler(async(req:Request,res:Response)=>{
 
 
  
+
 
 // get a single user
 export const getASingleUser=asyncHandler(async(req:Request,res:Response)=>{
@@ -113,6 +124,8 @@ export const getAllUser=asyncHandler(async(req:Request,res:Response)=>{
     
 })
 
+ 
+
 // forget the passsword
 export const forgetPassword=asyncHandler(async(req,res)=>{
     try {
@@ -130,7 +143,7 @@ export const forgetPassword=asyncHandler(async(req,res)=>{
             await sendEmail({
                 email:user.email,
                 subject:"reset the password", 
-                message 
+                message  
             })
             
         } catch (error) {

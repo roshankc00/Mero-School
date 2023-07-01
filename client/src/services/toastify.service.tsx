@@ -1,4 +1,5 @@
 import {  toast } from 'react-toastify';
+import { tostifyMe } from '../pages/Interfaces/service.interface';
 
 
 
@@ -6,7 +7,7 @@ import {  toast } from 'react-toastify';
 
 
 
-const config:any= {
+const config:tostifyMe= {
     position: "top-right",
     autoClose: 5000,
     hideProgressBar: false,

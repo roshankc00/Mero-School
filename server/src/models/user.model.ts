@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose ,{InferSchemaType}from 'mongoose';
 import {UserDocument, UserInterface} from '../Interfaces/user.interface';
 import bcrypt from 'bcryptjs'
 import crypto from 'crypto'
@@ -71,5 +71,6 @@ userSchema.pre(
         
         
     }
+    export type UserType=InferSchemaType<typeof userSchema>
     const User = mongoose.model<UserDocument>('User', userSchema);
     export default User;

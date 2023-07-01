@@ -3,8 +3,6 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -15,21 +13,24 @@ import SignInWithGoogle from '../../components/Signin';
 import { postData } from '../../services/axios.service';
 import { useNavigate } from 'react-router-dom';
 import { errorToast, sucessToast } from '../../services/toastify.service';
-
+import {useDispatch} from 'react-redux'
+import { loggedin } from './authSlice';
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
 export default function SignIn() {
-    const navigate=useNavigate()
-    const [data,setdata]=useState({})
+  const [data,setdata]=useState({})
+  const dispatch=useDispatch()
+  const navigate=useNavigate()
   const handleSubmit = async(event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     console.log(data)
     const response=await postData('user/login',data)
-    console.log(response)
     if(response.sucess){
-        navigate('/dashboard')
-        sucessToast(response.message)   
+      dispatch (loggedin(response.data))
+        // navigate('/dashboard')
+        console.log(response.data)
+        sucessToast(response.message)    
     }
     else{
         errorToast(response.message)

@@ -4,9 +4,12 @@ import jwt from 'jsonwebtoken'
 import validateMongodbId from '../utils/validateMongoDbId'
 import env from '../utils/validateEnv'
 import User from '../models/user.model'
-import { CustomRequest, UserDocument, UserInterface } from '../Interfaces/user.interface'
+import { CustomRequest, UserDocument, UserInterface, customREQUESTROLE } from '../Interfaces/user.interface'
 
 
+
+
+// check auth 
 export const checkAuth=asyncHandler(async(req:CustomRequest,res:Response,next:NextFunction)=>{
     try {
         if(!req.headers.authorization){
@@ -19,7 +22,7 @@ export const checkAuth=asyncHandler(async(req:CustomRequest,res:Response,next:Ne
         let token=req.headers.authorization.split(' ')[1]
         let decoded:any=jwt.verify(token,env.SECRET)
         const email:string=decoded.email
-        const user=await User.findOne({email})
+        const user:any=await User.findOne({email})
         req.user=user
         next()   
     } catch (error:any) {
@@ -29,12 +32,20 @@ export const checkAuth=asyncHandler(async(req:CustomRequest,res:Response,next:Ne
 
 
 
-export const checkRole=(...roles:any)=>(req:CustomRequest,res:Response,next:NextFunction)=>{
-    if(roles.includes(req.user.role)){
+
+
+// check role 
+export const checkRole=(...roles:any)=>(req:customREQUESTROLE,res:Response,next:NextFunction)=>{
+    if(roles.includes(req?.user?.role)){
         next()
     }else{
-        throw new Error("you are not authorized to access this resources")
+        res.status(400).json({
+            sucess:false,
+            message:"you are not authorized to acess this resource"
+
+        
+    })
+
     }
-
-
 }
+
