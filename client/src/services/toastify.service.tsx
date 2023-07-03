@@ -1,5 +1,5 @@
 import {  toast } from 'react-toastify';
-import { tostifyMe } from '../pages/Interfaces/service.interface';
+import { tostifyMe } from './service.interface';
 
 
 

@@ -28,14 +28,23 @@ export interface UserDocument extends UserInterface, mongoose.Document{
 
 
 export interface CustomRequest extends Request{
-    user?:any,
+    user?:object,
+}
+
+
+export interface customREQUESTCREATECOURSE{
+    user:{
+        _id:string
+    }
 }
 
 
 
-
-
-
+export interface customREQUESTROLE{
+    user:{
+        role:string
+    }
+}
 
 
 

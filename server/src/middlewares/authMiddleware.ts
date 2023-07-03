@@ -19,7 +19,7 @@ export const checkAuth=asyncHandler(async(req:CustomRequest,res:Response,next:Ne
         if(!checktoken){
             throw new Error("register first")
         }
-        let token=req.headers.authorization.split(' ')[1]
+        let token:string=req.headers.authorization.split(' ')[1]
         let decoded:any=jwt.verify(token,env.SECRET)
         const email:string=decoded.email
         const user:any=await User.findOne({email})
@@ -42,7 +42,6 @@ export const checkRole=(...roles:any)=>(req:customREQUESTROLE,res:Response,next:
         res.status(400).json({
             sucess:false,
             message:"you are not authorized to acess this resource"
-
         
     })
 

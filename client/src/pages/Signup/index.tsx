@@ -13,9 +13,8 @@ import { postData } from '../../services/axios.service';
 import { useNavigate } from 'react-router-dom';
 import { errorToast, sucessToast } from '../../services/toastify.service';
 function Copyright(props:any) {
-
-
-     
+  
+  
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}

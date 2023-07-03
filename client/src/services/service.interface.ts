@@ -1,3 +1,11 @@
+
+
+
+
+
+
+
+
 export interface tostifyMe {
     position:any,
     autoClose: number,
@@ -7,5 +15,4 @@ export interface tostifyMe {
     draggable: boolean,
     progress: undefined,
     theme: any,
-
 }

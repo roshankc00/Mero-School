@@ -28,8 +28,7 @@ export default function SignIn() {
     const response=await postData('user/login',data)
     if(response.sucess){
       dispatch (loggedin(response.data))
-        // navigate('/dashboard')
-        console.log(response.data)
+        navigate('/dashboard')
         sucessToast(response.message)    
     }
     else{
