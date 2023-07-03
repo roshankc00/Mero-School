@@ -6,7 +6,7 @@ import validateMongodbId from "../utils/validateMongoDbId";
 import Section from "../models/sectionModel";
 import Lecture from "../models/lecture.model";
 import cloudinary from "../config/cloudinary.config";
-import fs from 'fs'
+import { deleteLocalFile } from "../utils/deleteLocalFile";
 
 export const createCourse = asyncHandler(async (req: any, res: Response) => {
   const { title, description, price, duration, sections, categories, content } =
@@ -64,14 +64,9 @@ export const createCourse = asyncHandler(async (req: any, res: Response) => {
       course.sections.push(section._id)
     }
     await course.save();
-    const fs = require('fs');
 // deleting the local file 
-    try {
-        fs.unlinkSync(`${req.file.path}`);
-        console.log("Delete File successfully.");
-      } catch (error) {
-        console.log(error);
-      }
+    deleteLocalFile(req.file.path);
+
 
      res.status(200).json({
         sucess:true,
