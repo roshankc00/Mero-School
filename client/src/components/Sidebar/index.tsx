@@ -19,6 +19,7 @@ import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import { Outlet } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const drawerWidth = 240;
 
@@ -92,6 +93,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 export default function Sidebar() {
+  const navigate=useNavigate()
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
@@ -133,9 +135,10 @@ export default function Sidebar() {
         </DrawerHeader>
         <Divider />
         <List>
-          {['Home', 'Courses', 'Section', 'Order'].map((text, index) => (
+          {['Home', 'Courses', 'Section', 'Order',"lecture"].map((text, index) => (
             <ListItem key={text} disablePadding sx={{ display: 'block' }}>
               <ListItemButton
+              onClick={()=>navigate(`/${text}`)}
                 sx={{
                   minHeight: 48,
                   justifyContent: open ? 'initial' : 'center',
@@ -161,6 +164,7 @@ export default function Sidebar() {
           {['Inbox', 'Trash', 'Logout'].map((text, index) => (
             <ListItem key={text} disablePadding sx={{ display: 'block' }}>
               <ListItemButton
+              onClick={()=>navigate(`/${text.toLowerCase()}`)}
                 sx={{
                   minHeight: 48,
                   justifyContent: open ? 'initial' : 'center',
