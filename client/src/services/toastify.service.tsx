@@ -31,6 +31,9 @@ export const warningToast=(message:string)=>{
 export const errorToast=(message:string)=>{
     toast.error(message,config)
 } 
+export const loadingToast=()=>{
+    toast.loading("loading",config)
+} 
 
 
 

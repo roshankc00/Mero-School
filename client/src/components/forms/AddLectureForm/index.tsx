@@ -4,25 +4,25 @@ import { postData, postDataWithHeader } from "../../../services/axios.service";
 import { useSelector } from "react-redux";
 import { errorToast, sucessToast } from "../../../services/toastify.service";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const AddLectureForm = () => {
+  const navigate=useNavigate()
   const token=useSelector((e:any)=>{
-    return e.auth.token
+    return e.auth.jwt
   })
   const handleSubmit = async(values: any, { setSubmitting }: any) => {
     try {
-
-      const data={
-        title:values.title,
-        photo:values.file,
-        duration:values.duration,
-        content:values.content,
-      } 
-      console.log(token)
-      const response=await postDataWithHeader('lecture',values,token)
-      console.log(response,"thanls")
+      const formData=new FormData();
+      formData.append("title",values.title)
+      formData.append("duration",values.duration)
+      formData.append("file",values.file)
+      formData.append("content",values.content)
+      const response=await postDataWithHeader('lecture',formData,token)
+      console.log(response,"thanlks")
       if(response.sucess){
         sucessToast(response.message)
+        navigate('/lecture')
       }else{
         errorToast(response.message)
       }       
@@ -57,7 +57,7 @@ const AddLectureForm = () => {
         validationSchema={lectureValidationSchema}
         onSubmit={handleSubmit}
       >
-        {({ isSubmitting}: any) => {
+        {({ isSubmitting,setFieldValue}: any) => {
           return (
             <Form>
               <div className="mb-4">
@@ -112,12 +112,16 @@ const AddLectureForm = () => {
                 <label htmlFor="file" className="block mb-2">
                   File
                 </label>
-                <Field
+                <input
                   type="file"
                   name="file"
                   id="file"
+                  onChange={(e:any)=>{
+                    setFieldValue("file",e.currentTarget.files[0])
+                  }}
                   className="w-full border px-4 py-2"
-                ></Field>
+                  
+                ></input>
                 <ErrorMessage
                   name="file"
                   component="div"

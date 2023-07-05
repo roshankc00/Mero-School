@@ -123,7 +123,7 @@ export default function Sidebar() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            Mini variant drawer
+            Grow with us 
           </Typography>
         </Toolbar>
       </AppBar>

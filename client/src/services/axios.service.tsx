@@ -11,8 +11,6 @@ export const postData=async(url:string,data:any)=>{
 }
 
 export const postDataWithHeader=async(url:string,data:any,token:any)=>{
-    console.log(url,serverURL,token,data)
-
     try {
         const response=await axios.post(`${serverURL}/${url}`,data,{
             headers:{
@@ -25,5 +23,33 @@ export const postDataWithHeader=async(url:string,data:any,token:any)=>{
     }
 }
 
+export const getData=async(url:string,token:any)=>{
+
+    try {
+        const response=await axios.get(`${serverURL}/${url}`,{
+            headers:{
+                Authorization:`Bearer ${token}`
+            }
+        })
+        return response.data
+    } catch (error:any) {
+        console.log(error)
+    }
+}
+
+
+export const deleteData=async(url:string,token:any)=>{
+
+    try {
+        const response=await axios.delete(`${serverURL}/${url}`,{
+            headers:{
+                Authorization:`Bearer ${token}`
+            }
+        })
+        return response.data
+    } catch (error:any) {
+        console.log(error)
+    }
+}
 
 
