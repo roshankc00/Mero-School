@@ -135,10 +135,10 @@ export default function Sidebar() {
         </DrawerHeader>
         <Divider />
         <List>
-          {['Home', 'Courses', 'Section', 'Order',"lecture"].map((text, index) => (
+          {['Home', 'Course', 'Section', 'Order',"Lecture"].map((text, index) => (
             <ListItem key={text} disablePadding sx={{ display: 'block' }}>
               <ListItemButton
-              onClick={()=>navigate(`/${text}`)}
+              onClick={()=>navigate(`/${text.toLowerCase()}`)}
                 sx={{
                   minHeight: 48,
                   justifyContent: open ? 'initial' : 'center',

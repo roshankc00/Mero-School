@@ -6,7 +6,7 @@ import { errorHandler, notFound } from "./middlewares/errorHandler";
 import passport from "passport";
 import expressSession from "express-session";
 import cors from 'cors'
-import authRoute from './routes/index'
+import allRoute from './routes/index'
 import {passportInitialize} from "./middlewares/passport.middleware";
 
 // uncaughtException error handler
@@ -42,7 +42,7 @@ app.use(cors())
 
 
 // routes
-app.use(authRoute)
+app.use(allRoute)
 // error handlers
 app.use(errorHandler);
 app.use(notFound);

@@ -7,7 +7,7 @@ import { createLecture, getASingleLecture, getAllLectures } from '../controllers
 const router=express.Router()
 
 
-router.post('/',checkAuth,upload.single('photo'),createLecture)
+router.post('/',checkAuth,upload.single('file'),createLecture)
 router.get('/:id',getASingleLecture)
 router.get('/',getAllLectures)
 

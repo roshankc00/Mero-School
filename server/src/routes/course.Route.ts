@@ -6,6 +6,6 @@ import { checkAuth, checkRole } from '../middlewares/authMiddleware';
 const router=express.Router()
 
 
-router.post('/',checkAuth,checkRole('admin','instructor') as any,upload.single('photo'),createCourse)
+router.post('/',checkAuth,upload.array('photo',12),createCourse)
 
 export default router 

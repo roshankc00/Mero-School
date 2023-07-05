@@ -24,18 +24,19 @@ export const createCourse = asyncHandler(async (req: any, res: Response) => {
       content,
       instructorId,
     });
-    await course.save();
+    await course.save();     
 
-    // sections
+    if(sections.length>0){
+
+         // sections
     for (let sectionData of sections) {
       const section = new Section({
         title: sectionData.title,
         lectures: [],
       });
-      await sections.save();
+      await section.save();
 
       // lectures
-
       for (let lectureData of sectionData.lectures) {
         const lecture = new Lecture({
           title: lectureData.title,
@@ -43,20 +44,23 @@ export const createCourse = asyncHandler(async (req: any, res: Response) => {
           duration: lectureData.duration,
         });
         let result;
-        if (req.file.mimetype === "image/jpeg"
-        || req.file.mimetype==='image/png'
-        || req.file.mimetype==='image/jpg'        
+        for (let file of req.files){
+
+          if (file.mimetype === "image/jpeg"
+          || file.mimetype==='image/png'
+        || file.mimetype==='image/jpg'        
         ) {
-          result = await cloudinary.v2.uploader.upload(req.file.path);
+          result = await cloudinary.v2.uploader.upload(file.path);
         }else{               
-            result = await cloudinary.v2.uploader.upload(req.file.path,{
+          result = await cloudinary.v2.uploader.upload(file.path,{
                 resource_type:'video',
                 folder:'videos'
-            });
-     
-        }
-        lecture.lectureUrl=result.secure_url;
-        await lecture.save();
+              });
+              
+            }
+            lecture.lectureUrl=result.secure_url;
+            await lecture.save();
+          }
         section.lectures.push(lecture._id)
 
       }
@@ -64,10 +68,14 @@ export const createCourse = asyncHandler(async (req: any, res: Response) => {
       course.sections.push(section._id)
     }
     await course.save();
-// deleting the local file 
-    deleteLocalFile(req.file.path);
+    
+    
+    // deleting the local file 
+    for (let data of req.files){
+      deleteLocalFile(data.path);
 
-
+    }
+  }
      res.status(200).json({
         sucess:true,
         message:"course created sucessfully",
@@ -79,3 +87,7 @@ export const createCourse = asyncHandler(async (req: any, res: Response) => {
     throw new Error(error);
   }
 });
+
+
+
+// loop lagaxa sections 
