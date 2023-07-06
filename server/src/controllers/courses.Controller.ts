@@ -7,6 +7,7 @@ import Section from "../models/sectionModel";
 import Lecture from "../models/lecture.model";
 import cloudinary from "../config/cloudinary.config";
 import { deleteLocalFile } from "../utils/deleteLocalFile";
+import { error } from "console";
 
 export const createCourse = asyncHandler(async (req: any, res: Response) => {
   const { title, description, price, duration, sections, categories, content } =
@@ -74,7 +75,7 @@ export const createCourse = asyncHandler(async (req: any, res: Response) => {
     for (let data of req.files){
       deleteLocalFile(data.path);
 
-    }
+    } 
   }
      res.status(200).json({
         sucess:true,
@@ -90,4 +91,35 @@ export const createCourse = asyncHandler(async (req: any, res: Response) => {
 
 
 
-// loop lagaxa sections 
+
+export const getCourses=asyncHandler(async(req:Request,res:Response)=>{
+  try {
+    const courses=await Course.find({})
+    if(!courses){
+      throw new Error("courses not found");
+    }
+
+    else{
+      res.status(200).json({
+        sucess:true,
+        courses
+      })
+    }
+    
+  } catch (error:any) {
+    throw new Error(error)
+    
+  }
+})
+
+
+
+
+const editLecture=asyncHandler(async(req:Request,res:Response)=>{
+  try {
+
+    
+  } catch (error:any) {
+    throw new Error(error)    
+  }
+})

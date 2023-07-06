@@ -6,6 +6,8 @@ import Lecture from '../models/lecture.model';
 import cloudinary from '../config/cloudinary.config';
 import { deleteLocalFile } from '../utils/deleteLocalFile';
 
+
+// create the lecture
 export const createLecture = asyncHandler(async (req: any, res: Response) => {
     try {
         const {title,content,duration}=req.body
@@ -105,5 +107,50 @@ export const deleteLecture=asyncHandler(async(req:Request,res:Response)=>{
   } catch (error:any) {
       throw new Error(error)
       
+  }
+})
+
+
+
+// update the lecture
+export const editLecture=asyncHandler(async(req:any,res:Response):Promise<void>=>{
+  try {
+    const id=req.params.id
+    validateMongodbId(id)
+    const {isVideoEdited}=req.body;
+    console.log(isVideoEdited)
+    const lecture=await Lecture.findById(id);
+    console.log(lecture)
+    let  updatedLecture;
+    if(!lecture){
+      throw new Error('lecture not found')
+    }else{
+      if(isVideoEdited){
+        console.log("me")
+        const upload=await cloudinary.v2.uploader.upload(req?.file?.path);
+        const lectureUrl=upload.secure_url;
+        req.body.lectureUrl=lectureUrl;
+        delete req.body.isVideoEdited
+        updatedLecture=await Lecture.findByIdAndUpdate(id,{
+          $set:req.body
+        },{new:true})    
+      }else{
+       updatedLecture=await Lecture.findByIdAndUpdate(id,{
+          $set:req.body
+        },{new:true})
+      }
+    }
+  
+    res.status(200).json({
+      sucess:true,
+      message:"lecture updated sucessfullly",
+      updatedLecture
+     })
+
+
+    
+  } catch (error:any) {
+    throw new Error(error)
+    
   }
 })

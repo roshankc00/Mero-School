@@ -1,9 +1,9 @@
 import { Formik, Form, Field, ErrorMessage, FieldArray } from "formik";
 import { mixed, number, object, string, array } from "yup";
-import { Step, StepLabel, Stepper, duration } from "@mui/material";
+import { Button, Step, StepLabel, Stepper, duration } from "@mui/material";
 import { useState } from "react";
 const AddCourseForm = () => {
-  const [activeStep, setactiveStep] = useState(1);
+  const [activeStep, setactiveStep] = useState(0);
   const steps = ["Course Details", "Sections and Lectures"];
   const coursevalidationScheama = object().shape({
     title: string()
@@ -40,6 +40,12 @@ const AddCourseForm = () => {
       console.log(error);
     }
   };
+  const handleNext=()=>{
+    setactiveStep(activeStep+1)
+  }
+  const handlePrevious=()=>{
+    setactiveStep(activeStep-1)
+  }
 
   const initialValues = {
     title: "",
@@ -321,6 +327,7 @@ const AddCourseForm = () => {
 
                                       )
                                     }  
+                                    {/* add lecture button start */}
                                     <button type="button" onClick={()=>{
                                       addlecture({
                                         title: "",
@@ -329,6 +336,9 @@ const AddCourseForm = () => {
                                         file: null,
                                       })
                                     }} className="bg-green-500 hover:bg-green-700 text-white font-bold p-2">Add lecture</button>
+                                      {/* add lecture button ends  */}
+
+
 
 
 
@@ -347,13 +357,67 @@ const AddCourseForm = () => {
                             )
                           }
                         </FieldArray>
+                        {/* remove section */}
+                        {
+                          sectionIndex>0 &&(
+                            <button className="bg-red-500 hover:bg-red-700 p-2 text-white mx-2" onClick={()=>{
+                              const updatedSection=[...values.sections]
+                              updatedSection.splice(sectionIndex,1)
+                              setFieldValue("sections",updatedSection)
+                            }}> Remove Lecture </button>
+                          )
+                        }
+                        {/* remove section ends  */}
+
+                        {
+                          activeStep===1 &&
+                          <button
+                           className="bg-blue-400 hover:bg-blue-800 text-white p-2 ms-2"
+                           onClick={()=>{
+                            setFieldValue("sections",[
+                              ...values.sections,{
+                                title: "",
+                                lectures: [
+                                  {
+                                    title: "",
+                                    content: "",
+                                    duration: "",
+                                    file: null,
+                                  },
+                                ]
+                              }
+                            ])
+                           }}                          
+                          > Add Section</button>
+                        }
+
+                        
                       </div>
                     );
+
                   })}
+            
+
+
                 </>
               )}
 
-            
+                    <div className="mt-6">
+                    {
+                      activeStep>0 &&
+                      <Button variant="contained"  className="m-2" onClick={()=>{handlePrevious()}}> previous</Button>
+                    }
+                    {
+                      activeStep<steps.length-1 &&
+                      <Button variant="contained" className="m-2" onClick={()=>{handleNext()}}> Next</Button>
+                    }
+                    {activeStep>0 &&
+
+                      <Button type="submit" variant="contained"  className="m-2"> submit </Button>
+                    }
+
+                   </div>
+
             </Form>
           );
         }}
