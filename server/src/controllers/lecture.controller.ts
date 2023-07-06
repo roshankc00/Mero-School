@@ -84,3 +84,26 @@ export const getAllLectures=asyncHandler(async(req:Request,res:Response)=>{
         
     }
 })
+
+
+// delete lecture 
+export const deleteLecture=asyncHandler(async(req:Request,res:Response)=>{
+  try {
+    const id =req.params.id
+    validateMongodbId(id);
+
+    const lecture=await Lecture.findById(id);
+    if(!lecture){
+      throw new Error("no lecture with this id exists")
+    }
+  await Lecture.findByIdAndDelete(id);
+    res.status(200).json({
+      sucess:true,
+      message:"lecture deleted sucessfully"
+    })
+      
+  } catch (error:any) {
+      throw new Error(error)
+      
+  }
+})

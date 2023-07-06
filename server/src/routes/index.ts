@@ -11,9 +11,9 @@ const router=express.Router()
 
 router.use('/auth',authRoute)
 router.use('/api/v1/user',userRoute)
-router.use('/api/v1/course',checkAuth,courseRoute)
-router.use('/api/v1/section',checkAuth,sectionRoute)
-router.use('/api/v1/lecture',checkAuth,lectureRoute)
+router.use('/api/v1/course',courseRoute)
+router.use('/api/v1/section',sectionRoute)
+router.use('/api/v1/lecture',lectureRoute)
 
 
 export default router;

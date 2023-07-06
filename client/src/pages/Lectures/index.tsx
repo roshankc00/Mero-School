@@ -6,12 +6,8 @@ import { Button, Card, CardContent, IconButton, Typography } from "@mui/material
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { errorToast, loadingToast, sucessToast } from "../../services/toastify.service"
+
 const Lectures = () => {
- 
-
-
-
-
   const [lectures, setlectures] = useState([])
   const token=useSelector((state:any)=>{
     return state.auth.jwt
@@ -24,10 +20,10 @@ const Lectures = () => {
       console.log(lectures)
 
     }
-
    useEffect(()=>{
     getLectureData();
      },[])
+
 
       // delete handler 
      const deletehandler=async(id:string)=>{
@@ -45,12 +41,23 @@ const Lectures = () => {
       }
     }
     
+
     
     //  update handler 
     const updatehandler=(id:string)=>{
       console.log(id,"update")
-
      }
+      
+
+
+     
+
+
+
+
+     
+
+
   return (
     <>
    
@@ -79,7 +86,7 @@ const Lectures = () => {
           Duration:{el.duration} hrs
         </Typography>
         <Typography variant="body1" className="mb-4">
-         {el.content.length>15?el.content.slice(0,15):el.content}
+         {el.content.length>15?el.content.slice(0,15) + "...":el.content}
         </Typography>
         <div className="aspect-w-16">
           <video src={el.lectureUrl
