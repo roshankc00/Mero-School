@@ -1,426 +1,407 @@
-import { Formik, Form, Field, ErrorMessage, FieldArray } from "formik";
-import { mixed, number, object, string, array } from "yup";
-import { Button, Step, StepLabel, Stepper, duration } from "@mui/material";
+import { Stepper, Step, StepLabel, Button } from "@mui/material";
+import { Formik, Form, Field, FieldArray, ErrorMessage } from "formik";
 import { useState } from "react";
+import * as Yup from "yup";
+
+const steps = ["Course Details", "Sections and Lectures"];
+
+const validationSchema = Yup.object().shape({
+  title: Yup.string().required("Title is required"),
+  description: Yup.string().required("Description is required"),
+  price: Yup.number().required("Price is required"),
+  duration: Yup.string().required("Duration is required"),
+  sections: Yup.array().of(
+    Yup.object({
+      title: Yup.string().required("Section title is required"),
+      lectures: Yup.array().of(
+        Yup.object({
+          title: Yup.string().required("Lecture title is required"),
+          content: Yup.string().required("Lecture content is required"),
+          duration: Yup.string().required("Lecture duration is required"),
+          file: Yup.mixed().required("Lecture file is required"),
+        })
+      ),
+    })
+  ),
+});
+
+const initialValues: any = {
+  title: "",
+  description: "",
+  price: "",
+  duration: "",
+  sections: [
+    {
+      title: "",
+      lectures: [
+        {
+          title: "",
+          content: "",
+          duration: "",
+          file: null,
+        },
+      ],
+    },
+  ],
+};
+
 const AddCourseForm = () => {
-  const [activeStep, setactiveStep] = useState(0);
-  const steps = ["Course Details", "Sections and Lectures"];
-  const coursevalidationScheama = object().shape({
-    title: string()
-      .required("title is required")
-      .min(3, "minimum should be of 3 charecter"),
-    description: string()
-      .required("description is required")
-      .min(10, "description should be of 10 charecter"),
-    price: number().required("pice is required"),
-    duration: number().required("duration is required"),
-    sections: array().of(
-      object({
-        title: string().required("title is requrired"),
-        lectures: array().of(
-          object({
-            title: string()
-              .required("title is required")
-              .min(3, "title  should be of atleast 3 charecter"),
-            content: string()
-              .required("content is required")
-              .min(10, "content should be of atleast  3 charecter"),
-            duration: number().required("duration is required"),
-            file: mixed().required("file is required"),
-          })
-        ),
-      })
-    ),
-  });
+  const [activeStep, setActiveStep] = useState(0);
 
-  const handleSubmit = (values: any) => {
-    try {
-      console.log(values);
-    } catch (error: any) {
-      console.log(error);
-    }
+  const handleNextStep = () => {
+    setActiveStep((prevStep) => prevStep + 1);
   };
-  const handleNext=()=>{
-    setactiveStep(activeStep+1)
-  }
-  const handlePrevious=()=>{
-    setactiveStep(activeStep-1)
-  }
 
-  const initialValues = {
-    title: "",
-    description: "",
-    price: "",
-    duration: "",
-    sections: [
-      {
-        title: "",
-        lectures: [
-          {
-            title: "",
-            content: "",
-            duration: "",
-            file: null,
-          },
-        ],
-      },
-    ],
+  const handlePreviousStep = () => {
+    setActiveStep((prevStep) => prevStep - 1);
+  };
+  const handleFormSubmit = async (values: any) => {
+    try {
+      // Perform API call to submit the form data
+      console.log(values);
+    } catch (error) {
+      console.error("An error occurred while submitting the form", error);
+    }
   };
 
   return (
     <div>
       <Stepper activeStep={activeStep}>
-        {steps.map((step) => {
-          return (
-            <Step key={step}>
-              <StepLabel>{step}</StepLabel>
-            </Step>
-          );
-        })}
+        {steps.map((label) => (
+          <Step key={label}>
+            <StepLabel>{label}</StepLabel>
+          </Step>
+        ))}
       </Stepper>
+
       <Formik
         initialValues={initialValues}
-        validationSchema={coursevalidationScheama}
-        onSubmit={handleSubmit}
+        validationSchema={validationSchema}
+        onSubmit={handleFormSubmit}
       >
-        {({ values, errors, touched, setFieldValue }: any) => {
-          return (
-            <Form className="max-w-md mx-auto">
-              {/* step 1 : Course Detail */}
-              {activeStep === 0 && (
-                <>
-                  <div className="mb-4">
-                    <label htmlFor="title" className="block mb-2">
-                      Title
-                    </label>
-                    <Field
-                      type="text"
-                      id="title"
-                      name="title"
-                      className={`w-full border px-4 py-2 ${
-                        errors.title && touched.title ? "border-red-500" : ""
-                      } `}
-                    ></Field>
-                    <ErrorMessage
-                      name="title"
-                      component="div"
-                      className="text-red-500 mt-1"
-                    />
-                  </div>
+        {({ values, errors, touched, setFieldValue }: any) => (
+          <Form className="w-full max-w-lg mx-auto">
+            {/* Step 1: Course Details */}
 
+            {activeStep === 0 && (
+              <div>
+                <div className="mb-4">
+                  <label className="block mb-2" htmlFor="title">
+                    Title
+                  </label>
+                  <Field
+                    type="text"
+                    id="title"
+                    name="title"
+                    className={`w-full border p-2 ${
+                      errors.title && touched.title ? "border-red-500" : ""
+                    }`}
+                  />
+                  <ErrorMessage
+                    name="title"
+                    component="div"
+                    className="text-red-500"
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="block mb-2" htmlFor="description">
+                    Description
+                  </label>
+                  <Field
+                    as="textarea"
+                    id="description"
+                    name="description"
+                    className={`w-full border p-2 ${
+                      errors.description && touched.description
+                        ? "border-red-500"
+                        : ""
+                    }`}
+                  />
+                  <ErrorMessage
+                    name="description"
+                    component="div"
+                    className="text-red-500"
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="block mb-2" htmlFor="price">
+                    Price
+                  </label>
+                  <Field
+                    type="text"
+                    id="price"
+                    name="price"
+                    className={`w-full border p-2 ${
+                      errors.price && touched.price ? "border-red-500" : ""
+                    }`}
+                  />
+                  <ErrorMessage
+                    name="price"
+                    component="div"
+                    className="text-red-500"
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="block mb-2" htmlFor="duration">
+                    Duration
+                  </label>
+                  <Field
+                    type="text"
+                    id="duration"
+                    name="duration"
+                    className={`w-full border p-2 ${
+                      errors.duration && touched.duration
+                        ? "border-red-500"
+                        : ""
+                    }`}
+                  />
+                  <ErrorMessage
+                    name="duration"
+                    component="div"
+                    className="text-red-500"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Step 2: Sections and Lectures */}
+            {activeStep === 1 &&
+              values.sections.map((section: any, sectionIndex: any) => (
+                <div key={sectionIndex} className="mb-6">
                   <div className="mb-4">
-                    <label htmlFor="description" className="block mb-2">
-                      Description
+                    <label
+                      className="block mb-2"
+                      htmlFor={`sections[${sectionIndex}].title`}
+                    >
+                      Section Title
                     </label>
                     <Field
                       type="text"
-                      id="description"
-                      name="description"
-                      className={`w-full border px-4 py-2 ${
-                        errors.description && touched.description
+                      id={`sections[${sectionIndex}].title`}
+                      name={`sections[${sectionIndex}].title`}
+                      className={`w-full border p-2 ${
+                        errors.sections?.[sectionIndex]?.title &&
+                        touched.sections?.[sectionIndex]?.title
                           ? "border-red-500"
                           : ""
-                      } `}
-                    ></Field>
+                      }`}
+                    />
                     <ErrorMessage
-                      name="description"
+                      name={`sections[${sectionIndex}].title`}
                       component="div"
-                      className="text-red-500 mt-1"
+                      className="text-red-500"
                     />
                   </div>
 
-                  <div className="mb-4">
-                    <label htmlFor="duration" className="block mb-2">
-                      Duration
-                    </label>
-                    <Field
-                      type="text"
-                      id="duration"
-                      name="duration"
-                      className={`w-full border px-4 py-2 ${
-                        errors.duration && touched.duration
-                          ? "border-red-500"
-                          : ""
-                      } `}
-                    ></Field>
-                    <ErrorMessage
-                      name="duration"
-                      component="div"
-                      className="text-red-500 mt-1"
-                    />
-                  </div>
+                  <FieldArray name={`sections[${sectionIndex}].lectures`}>
+                    {({ push: addLecture, remove: removeLecture }) => (
+                      <div>
+                        {section.lectures.map(
+                          (lecture: any, lectureIndex: any) => (
+                            <div key={lectureIndex} className="mb-4">
+                              <div className="mb-2">
+                                <label
+                                  className="block mb-2"
+                                  htmlFor={`sections[${sectionIndex}].lectures[${lectureIndex}].title`}
+                                >
+                                  Lecture Title
+                                </label>
+                                <Field
+                                  type="text"
+                                  id={`sections[${sectionIndex}].lectures[${lectureIndex}].title`}
+                                  name={`sections[${sectionIndex}].lectures[${lectureIndex}].title`}
+                                  className={`w-full border p-2 ${
+                                    errors.sections?.[sectionIndex]?.lectures?.[
+                                      lectureIndex
+                                    ]?.title &&
+                                    touched.sections?.[sectionIndex]
+                                      ?.lectures?.[lectureIndex]?.title
+                                      ? "border-red-500"
+                                      : ""
+                                  }`}
+                                />
+                                <ErrorMessage
+                                  name={`sections[${sectionIndex}].lectures[${lectureIndex}].title`}
+                                  component="div"
+                                  className="text-red-500"
+                                />
+                              </div>
 
-                  <div className="mb-4">
-                    <label htmlFor="price" className="block mb-2">
-                      Price
-                    </label>
-                    <Field
-                      type="text"
-                      id="price"
-                      name="price"
-                      className={`w-full border px-4 py-2 ${
-                        errors.price && touched.price ? "border-red-500" : ""
-                      } `}
-                    ></Field>
-                    <ErrorMessage
-                      name="price"
-                      component="div"
-                      className="text-red-500 mt-1"
-                    />
-                  </div>
-                </>
-              )}
+                              <div className="mb-2">
+                                <label
+                                  className="block mb-2"
+                                  htmlFor={`sections[${sectionIndex}].lectures[${lectureIndex}].content`}
+                                >
+                                  Lecture Content
+                                </label>
+                                <Field
+                                  as="textarea"
+                                  id={`sections[${sectionIndex}].lectures[${lectureIndex}].content`}
+                                  name={`sections[${sectionIndex}].lectures[${lectureIndex}].content`}
+                                  className={`w-full border p-2 ${
+                                    errors.sections?.[sectionIndex]?.lectures?.[
+                                      lectureIndex
+                                    ]?.content &&
+                                    touched.sections?.[sectionIndex]
+                                      ?.lectures?.[lectureIndex]?.content
+                                      ? "border-red-500"
+                                      : ""
+                                  }`}
+                                />
+                                <ErrorMessage
+                                  name={`sections[${sectionIndex}].lectures[${lectureIndex}].content`}
+                                  component="div"
+                                  className="text-red-500"
+                                />
+                              </div>
 
-              {/* Section detail  */}
-              {activeStep === 1 && (
-                <>
-                  {values.sections.map((section: any, sectionIndex: number) => {
-                    return (
-                      <div key={sectionIndex} className="mb-6">
-                        <div className="mb-4">
-                          <label
-                            htmlFor={`sections[${sectionIndex}].title`}
-                            className="block mb-2"
-                          >
-                            Section Title
-                          </label>
-                          <Field
-                            type="text"
-                            id={`sections[${sectionIndex}].title`}
-                            name={`sections[${sectionIndex}].title`}
-                            className={`w-full border px-4 py-2 ${
-                              errors.sections?.[sectionIndex]?.title &&
-                              touched.sections?.[sectionIndex]?.title
-                                ? "border-red-500"
-                                : ""
-                            } `}
-                          ></Field>
-                          <ErrorMessage
-                            name={`sections[${sectionIndex}].title`}
-                            component="div"
-                            className="text-red-500 mt-1"
-                          />
-                        </div>
-                        <FieldArray name={`sections[${sectionIndex}].lectures`}>
-                          {({ push: addlecture, remove: removeLecture }) =>
-                            section.lectures.map(
-                              (lecture: any, lectureIndex: number) => {
-                                return (
-                                  <div key={lectureIndex} className="mb-4">
+                              <div className="mb-2">
+                                <label
+                                  className="block mb-2"
+                                  htmlFor={`sections[${sectionIndex}].lectures[${lectureIndex}].duration`}
+                                >
+                                  Lecture Duration
+                                </label>
+                                <Field
+                                  type="text"
+                                  id={`sections[${sectionIndex}].lectures[${lectureIndex}].duration`}
+                                  name={`sections[${sectionIndex}].lectures[${lectureIndex}].duration`}
+                                  className={`w-full border p-2 ${
+                                    errors.sections?.[sectionIndex]?.lectures?.[
+                                      lectureIndex
+                                    ]?.duration &&
+                                    touched.sections?.[sectionIndex]
+                                      ?.lectures?.[lectureIndex]?.duration
+                                      ? "border-red-500"
+                                      : ""
+                                  }`}
+                                />
+                                <ErrorMessage
+                                  name={`sections[${sectionIndex}].lectures[${lectureIndex}].duration`}
+                                  component="div"
+                                  className="text-red-500"
+                                />
+                              </div>
 
-                                    <div className="mb-4">
-                                      <label
-                                        htmlFor={`sections[${sectionIndex}].lectures[${lectureIndex}].title`}
-                                        className="block mb-2"
-                                      >
-                                        Lecuture Title
-                                      </label>
-                                      <Field
-                                        type="text"
-                                        id={`sections[${sectionIndex}].lectures[${lectureIndex}].title`}
-                                        name={`sections[${sectionIndex}].lectures[${lectureIndex}].title`}
-                                        className={`w-full border px-4 py-2 ${
-                                          errors.sections?.[sectionIndex].lectures[`${lectureIndex}`]
-                                            ?.title &&
-                                          touched.sections?.[sectionIndex].lectures[`${lectureIndex}`]
-                                            ?.title
-                                            ? "border-red-500"
-                                            : ""
-                                        } `}
-                                      ></Field>
-                                      <ErrorMessage
-                                        name={`sections[${sectionIndex}].lectures[${lectureIndex}].title`}
-                                        component="div"
-                                        className="text-red-500 mt-1"
-                                      />
-                                    </div>
+                              <div className="mb-2">
+                                <label
+                                  className="block mb-2"
+                                  htmlFor={`sections[${sectionIndex}].lectures[${lectureIndex}].file`}
+                                >
+                                  Lecture File
+                                </label>
+                                <input
+                                  type="file"
+                                  id={`sections[${sectionIndex}].lectures[${lectureIndex}].file`}
+                                  name={`sections[${sectionIndex}].lectures[${lectureIndex}].file`}
+                                  className={`w-full border ${
+                                    errors.sections?.[sectionIndex]?.lectures?.[
+                                      lectureIndex
+                                    ]?.file &&
+                                    touched.sections?.[sectionIndex]
+                                      ?.lectures?.[lectureIndex]?.file
+                                      ? "border-red-500"
+                                      : ""
+                                  }`}
+                                  onChange={(event: any) => {
+                                    const file = event.target.files[0];
+                                    setFieldValue(
+                                      `sections[${sectionIndex}].lectures[${lectureIndex}].file`,
+                                      file
+                                    );
+                                  }}
+                                />
+                                <ErrorMessage
+                                  name={`sections[${sectionIndex}].lectures[${lectureIndex}].file`}
+                                  component="div"
+                                  className="text-red-500"
+                                />
+                              </div>
 
-                                    <div className="mb-4">
-                                      <label
-                                        htmlFor={`sections[${sectionIndex}].lectures[${lectureIndex}].content`}
-                                        className="block mb-2"
-                                      >
-                                        Lecuture content
-                                      </label>
-                                      <Field
-                                        type="text"
-                                        id={`sections[${sectionIndex}].lectures[${lectureIndex}].content`}
-                                        name={`sections[${sectionIndex}].lectures[${lectureIndex}].content`}
-                                        className={`w-full border px-4 py-2 ${
-                                          errors.sections?.[sectionIndex].lectures[`${lectureIndex}`]
-                                            ?.content &&
-                                          touched.sections?.[sectionIndex].lectures[`${lectureIndex}`]
-                                            ?.content
-                                            ? "border-red-500"
-                                            : ""
-                                        } `}
-                                      ></Field>
-                                      <ErrorMessage
-                                        name={`sections[${sectionIndex}].lectures[${lectureIndex}].content`}
-                                        component="div"
-                                        className="text-red-500 mt-1"
-                                      />
-                                    </div>
-
-
-                                    <div className="mb-4">
-                                      <label
-                                        htmlFor={`sections[${sectionIndex}].lectures[${lectureIndex}].content`}
-                                        className="block mb-2"
-                                      >
-                                        Lecuture duration
-                                      </label>
-                                      <Field
-                                        type="text"
-                                        id={`sections[${sectionIndex}].lectures[${lectureIndex}].duration`}
-                                        name={`sections[${sectionIndex}].lectures[${lectureIndex}].duration`}
-                                        className={`w-full border px-4 py-2 ${
-                                          errors.sections?.[sectionIndex].lectures[`${lectureIndex}`]
-                                            ?.duration &&
-                                          touched.sections?.[sectionIndex].lectures[`${lectureIndex}`]
-                                            ?.duration
-                                            ? "border-red-500"
-                                            : ""
-                                        } `}
-                                      ></Field>
-                                      <ErrorMessage
-                                        name={`sections[${sectionIndex}].lectures[${lectureIndex}].duration`}
-                                        component="div"
-                                        className="text-red-500 mt-1"
-                                      />
-                                    </div>
-
-
-                                    <div className="mb-4">
-                                      <label
-                                        htmlFor={`sections[${sectionIndex}].lectures[${lectureIndex}].content`}
-                                        className="block mb-2"
-                                      >
-                                        Lecuture file
-                                      </label>
-                                      <Field
-                                        type="file"
-                                        id={`sections[${sectionIndex}].lectures[${lectureIndex}].file`}
-                                        name={`sections[${sectionIndex}].lectures[${lectureIndex}].file`}
-                                        className={`w-full border px-4 py-2 ${
-                                          errors.sections?.[sectionIndex].lectures[`${lectureIndex}`]
-                                            ?.file &&
-                                          touched.sections?.[sectionIndex].lectures[`${lectureIndex}`]
-                                            ?.file
-                                            ? "border-red-500"
-                                            : ""
-                                        } `}
-                                        onChange={(e:any)=>{
-                                          setFieldValue(`sections[${sectionIndex}].lectures[${lectureIndex}].file`,e?.currentTarget.files[0])                                 
-                                        }}
-                                      ></Field>
-                                      <ErrorMessage
-                                        name={`sections[${sectionIndex}].lectures[${lectureIndex}].file`}
-                                        component="div"
-                                        className="text-red-500 mt-1"
-                                      />
-                                    </div>  
-
-                                    {
-                                      lectureIndex>0 &&(
-                                        <button className="bg-red-500 hover:bg-red-700 p-2 text-white" onClick={()=>{removeLecture(lectureIndex)}}> Remove Lecture </button> 
-
-                                      )
-                                    }  
-                                    {/* add lecture button start */}
-                                    <button type="button" onClick={()=>{
-                                      addlecture({
-                                        title: "",
-                                        content: "",
-                                        duration: "",
-                                        file: null,
-                                      })
-                                    }} className="bg-green-500 hover:bg-green-700 text-white font-bold p-2">Add lecture</button>
-                                      {/* add lecture button ends  */}
-
-
-
-
-
-
-
-
-                                  </div>
-
-
-
-
-
-
-                                );
-                              }
-                            )
-                          }
-                        </FieldArray>
-                        {/* remove section */}
-                        {
-                          sectionIndex>0 &&(
-                            <button className="bg-red-500 hover:bg-red-700 p-2 text-white mx-2" onClick={()=>{
-                              const updatedSection=[...values.sections]
-                              updatedSection.splice(sectionIndex,1)
-                              setFieldValue("sections",updatedSection)
-                            }}> Remove Lecture </button>
+                              {lectureIndex > 0 && (
+                                <button
+                                  type="button"
+                                  onClick={() => removeLecture(lectureIndex)}
+                                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                                >
+                                  Remove Lecture
+                                </button>
+                              )}
+                            </div>
                           )
-                        }
-                        {/* remove section ends  */}
-
-                        {
-                          activeStep===1 &&
-                          <button
-                           className="bg-blue-400 hover:bg-blue-800 text-white p-2 ms-2"
-                           onClick={()=>{
-                            setFieldValue("sections",[
-                              ...values.sections,{
-                                title: "",
-                                lectures: [
-                                  {
-                                    title: "",
-                                    content: "",
-                                    duration: "",
-                                    file: null,
-                                  },
-                                ]
-                              }
-                            ])
-                           }}                          
-                          > Add Section</button>
-                        }
-
-                        
+                        )}
+{/* w-full border px-4 */}
+                        <button
+                          type="button"
+                          onClick={() =>
+                            addLecture({
+                              title: "",
+                              content: "",
+                              duration: "",
+                              file: null,
+                            })
+                          }
+                          className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                        >
+                          Add Lecture
+                        </button>
                       </div>
-                    );
+                    )}
+                  </FieldArray>
 
-                  })}
-            
+                  {sectionIndex > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const updatedSections = [...values.sections];
+                        updatedSections.splice(sectionIndex, 1);
+                        setFieldValue("sections", updatedSections);
+                      }}
+                      className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                    >
+                      Remove Section
+                    </button>
+                  )}
+                </div>
+              ))}
+            {activeStep === 1 && (
+              <button
+                type="button"
+                onClick={() =>
+                  setFieldValue("sections", [
+                    ...values.sections,
+                    {
+                      title: "",
+                      lectures: [
+                        { title: "", content: "", duration: "", file: null },
+                      ],
+                    },
+                  ])
+                }
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              >
+                Add Section
+              </button>
+            )}
 
-
-                </>
+            <div className="mt-6">
+              {activeStep > 0 && (
+                <Button onClick={handlePreviousStep}>Previous</Button>
               )}
-
-                    <div className="mt-6">
-                    {
-                      activeStep>0 &&
-                      <Button variant="contained"  className="m-2" onClick={()=>{handlePrevious()}}> previous</Button>
-                    }
-                    {
-                      activeStep<steps.length-1 &&
-                      <Button variant="contained" className="m-2" onClick={()=>{handleNext()}}> Next</Button>
-                    }
-                    {activeStep>0 &&
-
-                      <Button type="submit" variant="contained"  className="m-2"> submit </Button>
-                    }
-
-                   </div>
-
-            </Form>
-          );
-        }}
+              {activeStep < steps.length - 1 && (
+                <Button onClick={handleNextStep}>Next</Button>
+              )}
+              {activeStep === steps.length - 1 && (
+                <Button type="submit" variant="contained">
+                  Submit
+                </Button>
+              )}
+            </div>
+          </Form>
+        )}
       </Formik>
     </div>
   );

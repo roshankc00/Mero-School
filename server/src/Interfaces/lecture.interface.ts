@@ -5,4 +5,5 @@ export interface LectureInteface extends Document {
     content: string;
     duration: number;
     lectureUrl: string;
+    publicId:string;
 }

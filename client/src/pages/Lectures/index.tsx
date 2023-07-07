@@ -62,8 +62,10 @@ const Lectures = () => {
     <>
    
     <div className="container mx-auto px-4 py-8">
-      <Typography variant="h4" gutterBottom> Lectures </Typography>
+      <div className="flex justify-between">
+      <Typography variant="h3" gutterBottom> Lectures </Typography>
     <Button variant="contained" className='mb-4' onClick={()=>navigate('/addlectureform')}>Add lectures</Button>
+      </div>
     <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"> 
   
 {
