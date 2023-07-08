@@ -10,6 +10,7 @@ import Sections from './pages/Sections'
 import AddLectureForm from './components/forms/AddLectureForm'
 import Courses from './pages/Courses'
 import AddCourseForm from './components/forms/AddCourseForm'
+import EditLectureForm from './components/forms/EditLectureForm'
 function App() {
 
   return (
@@ -21,6 +22,7 @@ function App() {
       <Route path='/addlectureform' element={<AddLectureForm/>}/>
       <Route path='/addcourseform' element={<AddCourseForm/>}/>
       <Route path='/lecture' element={<Lectures/>}/>
+      <Route path='/lecture/:id' element={<EditLectureForm/>}/>
       <Route path='/section' element={<Sections/>}/>
       <Route path='/course' element={<Courses/>}/>
       <Route path='/dashboard' element={<Dashboard/>}/>

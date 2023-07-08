@@ -46,6 +46,7 @@ const Lectures = () => {
     //  update handler 
     const updatehandler=(id:string)=>{
       console.log(id,"update")
+      navigate(`/lecture/${id}`)
      }
       
 

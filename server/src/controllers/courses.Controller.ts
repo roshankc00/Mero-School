@@ -8,6 +8,7 @@ import Lecture from "../models/lecture.model";
 import cloudinary from "../config/cloudinary.config";
 import { deleteLocalFile } from "../utils/deleteLocalFile";
 import { error } from "console";
+import { parseArgs } from "util";
 
 export const createCourse = asyncHandler(async (req: any, res: Response) => {
   const { title, description, price, duration, sections, categories, content } =
@@ -109,7 +110,7 @@ export const createCourse = asyncHandler(async (req: any, res: Response) => {
 
 export const getCourses=asyncHandler(async(req:Request,res:Response)=>{
   try {
-    const courses=await Course.find({})
+    const courses=await Course.find({}).populate('instructorId')
     if(!courses){
       throw new Error("courses not found");
     }
@@ -128,16 +129,46 @@ export const getCourses=asyncHandler(async(req:Request,res:Response)=>{
 })
 
 
+export const deleteCourse=asyncHandler(async(req,res)=>{
+  try {
+    const id=req.params.id;
+    validateMongodbId(id);
+    const course=await Course.findById(id);
+    if(!course){
+      throw new Error('no course exists with this id');
 
-
-// export const editCourse=asyncHandler(async(req:Request,res:Response)=>{
-//   try {
-//     const id=req.params.id;
-//     const {isEdited}=req.body;
-//     const course
-
+    }else{
+      await Course.findByIdAndDelete(id);
+    }
+    res.status(200).json({
+      sucess:false,
+      message:"course deleted sucessfully"
+    })
     
-//   } catch (error:any) {
-//     throw new Error(error)    
-//   }
-// })
+  } catch (error:any) {
+    throw new Error(error)
+    
+  }
+})
+export const getASingleCourse=asyncHandler(async(req,res)=>{
+  try {
+    const id=req.params.id;
+    validateMongodbId(id);
+    const course=await Course.findById(id);
+    if(!course){
+      throw new Error('no course exists with this id');
+
+    }
+  
+    res.status(200).json({
+      sucess:false,
+      course
+    })
+    
+  } catch (error:any) {
+    throw new Error(error)
+    
+  }
+})
+
+
