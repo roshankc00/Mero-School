@@ -2,6 +2,8 @@ import { Stepper, Step, StepLabel, Button } from "@mui/material";
 import { Formik, Form, Field, FieldArray, ErrorMessage } from "formik";
 import { useState } from "react";
 import * as Yup from "yup";
+import { postDataWithHeader } from "../../../services/axios.service";
+import { useSelector } from "react-redux";
 
 const steps = ["Course Details", "Sections and Lectures"];
 
@@ -46,6 +48,9 @@ const initialValues: any = {
 };
 
 const AddCourseForm = () => {
+  const token=useSelector((e:any)=>{
+    return e.auth.jwt
+  })
   const [activeStep, setActiveStep] = useState(0);
 
   const handleNextStep = () => {
@@ -59,6 +64,29 @@ const AddCourseForm = () => {
     try {
       // Perform API call to submit the form data
       console.log(values);
+      const formData=new FormData();
+      formData.append("title",values.title)
+      formData.append("duration",values.duration)
+      formData.append("description",values.description)
+      formData.append("price",values.price)
+      values.sections.forEach((section:any,sectionIndex:number)=>{
+        formData.append(`sections[${sectionIndex}][title]`,section.title)
+        section.lectures.forEach((lecture:any,lectureIndex:number)=>{
+          
+          formData.append(`sections[${sectionIndex}].lectures[${lectureIndex}].title`,section.title)
+          formData.append(`sections[${sectionIndex}].lectures[${lectureIndex}].content`,section.content)
+          formData.append(`sections[${sectionIndex}].lectures[${lectureIndex}].duration`,section.duration)
+          formData.append(`file`,section.file)          
+        })
+      })
+      console.log(formData)
+     const response=await  postDataWithHeader('section',formData,token)
+     console.log(response)
+
+      
+      
+
+
     } catch (error) {
       console.error("An error occurred while submitting the form", error);
     }

@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 
 const EditLectureForm = () => {
     const [lecture, setlecture] = useState<any>({})
-    
+    const [removeVedio, setremoveVedio] = useState<boolean>(true)    
   const navigate=useNavigate()
   const {id}=useParams()
   const token=useSelector((e:any)=>{
@@ -64,7 +64,7 @@ const   response=await getData(`lecture/${id}`,token)
     title: string().required("title is required"),
     content: string().required("content is required"),
     duration: number().required("duration is required"),
-    file: mixed().required("file is required"),
+    file: mixed().notRequired(),
   });
 
   
@@ -139,7 +139,19 @@ const   response=await getData(`lecture/${id}`,token)
                 <label htmlFor="file" className="block mb-2">
                   Video
                 </label>
+                {removeVedio &&
+                <>
                 <video src={lecture.lectureUrl} controls width='250' height='250'></video>
+                <button className='bg-blue-400 text-white p-2 1 mt-2 rounded-md' onClick={(e)=>{
+                  e.preventDefault();
+                  setremoveVedio(false)
+                  setFieldValue('file',null)
+                }}>Remove Vedion</button>
+                </>
+                }
+                {
+
+                }
                 <input
                   type="file"
                   name="file"
@@ -150,11 +162,7 @@ const   response=await getData(`lecture/${id}`,token)
                   className="w-full border px-4 py-2"
                   
                 ></input>
-                <ErrorMessage
-                  name="file"
-                  component="div"
-                  className="text-red-500 mt-1"
-                />
+               
               </div>
             
 

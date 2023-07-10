@@ -8,16 +8,24 @@ import 'react-toastify/dist/ReactToastify.css';
 import { BrowserRouter } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { PersistGate } from 'redux-persist/integration/react'
+// import { ErrorBoundary } from "react-error-boundary";
+
+
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <Provider store={store}>
+    {/* <ErrorBoundary fallback={<ErrorBoundary/>}> */}
+
+    <Provider store={store}>      
     <PersistGate loading={null} persistor={persistor}>
+
         <BrowserRouter>
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}> 
+   
     <App />
     </GoogleOAuthProvider>
     </BrowserRouter>
     </PersistGate>
     </Provider>
+    {/* </ErrorBoundary> */}
   </React.StrictMode>
 )
