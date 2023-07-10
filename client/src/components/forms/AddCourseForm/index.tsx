@@ -4,6 +4,8 @@ import { useState } from "react";
 import * as Yup from "yup";
 import { postDataWithHeader } from "../../../services/axios.service";
 import { useSelector } from "react-redux";
+import { errorToast, loadingToast, sucessToast } from "../../../services/toastify.service";
+import { useNavigate } from "react-router-dom";
 
 const steps = ["Course Details", "Sections and Lectures"];
 
@@ -48,6 +50,7 @@ const initialValues: any = {
 };
 
 const AddCourseForm = () => {
+  const navigate=useNavigate()
   const token=useSelector((e:any)=>{
     return e.auth.jwt
   })
@@ -71,17 +74,22 @@ const AddCourseForm = () => {
       formData.append("price",values.price)
       values.sections.forEach((section:any,sectionIndex:number)=>{
         formData.append(`sections[${sectionIndex}][title]`,section.title)
-        section.lectures.forEach((lecture:any,lectureIndex:number)=>{
-          
-          formData.append(`sections[${sectionIndex}].lectures[${lectureIndex}].title`,section.title)
-          formData.append(`sections[${sectionIndex}].lectures[${lectureIndex}].content`,section.content)
-          formData.append(`sections[${sectionIndex}].lectures[${lectureIndex}].duration`,section.duration)
-          formData.append(`file`,section.file)          
+        section.lectures.forEach((lecture:any,lectureIndex:number)=>{          
+          formData.append(`sections[${sectionIndex}][lectures][${lectureIndex}][title]`,lecture.title)
+          formData.append(`sections[${sectionIndex}][lectures][${lectureIndex}][content]`,lecture.content)
+          formData.append(`sections[${sectionIndex}][lectures][${lectureIndex}][duration]`,lecture.duration)
+          formData.append(`file`,lecture.file)          
         })
       })
       console.log(formData)
-     const response=await  postDataWithHeader('section',formData,token)
-     console.log(response)
+      loadingToast();
+     const response=await  postDataWithHeader('course',formData,token)
+     if(response.sucess){
+      sucessToast(response.message)
+      navigate('/course')
+     }else{
+      errorToast(response.message)
+     }
 
       
       
@@ -352,7 +360,12 @@ const AddCourseForm = () => {
                               {lectureIndex > 0 && (
                                 <button
                                   type="button"
-                                  onClick={() => removeLecture(lectureIndex)}
+                                  onClick={(e) =>{
+                                    e.preventDefault()
+                                    removeLecture(lectureIndex)}
+
+                                  }
+                                    
                                   className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
                                 >
                                   Remove Lecture

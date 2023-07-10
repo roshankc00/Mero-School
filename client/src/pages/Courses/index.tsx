@@ -23,6 +23,8 @@ const Courses = () => {
 
 const updatehandler=(id:string)=>{
   console.log(id)
+  
+  
 }
 const deletehandler=async(id:string)=>{
   const response=await deleteData(`course/${id}`,token)
@@ -38,10 +40,6 @@ const deletehandler=async(id:string)=>{
 }else{
   errorToast(response.message)
 }
-
-
-
-
 }
   
   return (

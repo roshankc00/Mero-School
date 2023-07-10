@@ -40,6 +40,7 @@ export const createCourse = asyncHandler(async (req: any, res: Response) => {
 
       // lectures
       for (let lectureData of sectionData.lectures) {
+        console.log(lectureData)
         const lecture = new Lecture({
           title: lectureData.title,
           content: lectureData.content,
@@ -107,20 +108,20 @@ export const createCourse = asyncHandler(async (req: any, res: Response) => {
 
 
 
-
+// get all the courses
 export const getCourses=asyncHandler(async(req:Request,res:Response)=>{
   try {
     const courses=await Course.find({}).populate('instructorId')
     if(!courses){
       throw new Error("courses not found");
     }
-
     else{
       res.status(200).json({
         sucess:true,
         courses
       })
     }
+
     
   } catch (error:any) {
     throw new Error(error)
@@ -129,6 +130,9 @@ export const getCourses=asyncHandler(async(req:Request,res:Response)=>{
 })
 
 
+
+
+// delete the course
 export const deleteCourse=asyncHandler(async(req,res)=>{
   try {
     const id=req.params.id;
@@ -136,10 +140,15 @@ export const deleteCourse=asyncHandler(async(req,res)=>{
     const course=await Course.findById(id);
     if(!course){
       throw new Error('no course exists with this id');
-
     }else{
-      await Course.findByIdAndDelete(id);
+      const sections=await Section.find({_id:{$in:course.sections}})
+      sections.map(async(section)=>{
+       const lectures= await Lecture.deleteMany({_id:{$in:section.lectures}})       
+      })
+      await Section.deleteMany({_id:{$in:course.sections}})
+      await Course.findByIdAndDelete(id)            
     }
+
     res.status(200).json({
       sucess:false,
       message:"course deleted sucessfully"
@@ -150,6 +159,10 @@ export const deleteCourse=asyncHandler(async(req,res)=>{
     
   }
 })
+
+
+
+// get a single course
 export const getASingleCourse=asyncHandler(async(req,res)=>{
   try {
     const id=req.params.id;
