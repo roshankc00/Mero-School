@@ -1,7 +1,6 @@
 import axios from 'axios'
 const serverURL=import.meta.env.VITE_API_URL
 export const postData=async(url:string,data:any)=>{
-
     try {
         const response=await axios.post(`${serverURL}/${url}`,data)        
         return response.data
@@ -9,6 +8,8 @@ export const postData=async(url:string,data:any)=>{
         console.log(error)
     }
 }
+
+
 
 export const postDataWithHeader=async(url:string,data:any,token:any)=>{
     try {
@@ -23,6 +24,28 @@ export const postDataWithHeader=async(url:string,data:any,token:any)=>{
     }
 }
 
+export const updateDataWithHeader=async(url:string,data:any,token:any)=>{
+    try {
+        const response=await axios.patch(`${serverURL}/${url}`,data,{
+            headers:{
+                Authorization:`Bearer ${token}`
+            }
+        })
+        return response.data
+    } catch (error:any) {
+        console.log(error)
+    }
+}
+
+
+
+
+
+
+
+
+
+
 export const getData=async(url:string,token:any)=>{
 
     try {
@@ -36,6 +59,14 @@ export const getData=async(url:string,token:any)=>{
         console.log(error)
     }
 }
+
+
+
+
+
+
+
+
 
 
 export const deleteData=async(url:string,token:any)=>{

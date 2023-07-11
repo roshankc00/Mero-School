@@ -1,9 +1,8 @@
 import { object, string, mixed, number } from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { postData, postDataWithHeader } from "../../../services/axios.service";
+import { postDataWithHeader } from "../../../services/axios.service";
 import { useSelector } from "react-redux";
 import { errorToast, sucessToast } from "../../../services/toastify.service";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const AddLectureForm = () => {
@@ -18,6 +17,7 @@ const AddLectureForm = () => {
       formData.append("duration",values.duration)
       formData.append("file",values.file)
       formData.append("content",values.content)
+      console.log(formData)
       const response=await postDataWithHeader('lecture',formData,token)
       console.log(response,"thanlks")
       if(response.sucess){

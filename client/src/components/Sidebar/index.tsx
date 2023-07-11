@@ -1,4 +1,4 @@
-import * as React from 'react';
+import {useEffect, useState} from 'react';
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
@@ -8,6 +8,7 @@ import List from '@mui/material/List';
 import CssBaseline from '@mui/material/CssBaseline';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
+import LogoutIcon from '@mui/icons-material/Logout';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -20,6 +21,8 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import { Outlet } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { logout } from '../../pages/Signin/authSlice';
 
 const drawerWidth = 240;
 
@@ -94,8 +97,20 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 export default function Sidebar() {
   const navigate=useNavigate()
+  const dispatch=useDispatch()
+  const role:string=useSelector((state:any)=>{
+    return state.auth.role;
+  })
+  const [sideBarValues, setsideBarValues] = useState(['Dashboard', 'Course', 'Section', 'Order',"Lecture"])
+
+useEffect(()=>{
+  if(role==="student"){
+    setsideBarValues(["Dashboard","Courses"])
+  }
+},[role])
+
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -104,6 +119,12 @@ export default function Sidebar() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+  const handleLogOut=()=>{
+    dispatch(logout());  
+  }
+
+
+
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -135,8 +156,14 @@ export default function Sidebar() {
         </DrawerHeader>
         <Divider />
         <List>
-          {['Home', 'Course', 'Section', 'Order',"Lecture"].map((text, index) => (
-            <ListItem key={text} disablePadding sx={{ display: 'block' }}>
+          {sideBarValues.map((text, index) => {
+            return (
+              <ListItem key={text} disablePadding sx={{ display: 'block' }}>
+              
+
+                
+
+                
               <ListItemButton
               onClick={()=>navigate(`/${text.toLowerCase()}`)}
                 sx={{
@@ -156,15 +183,22 @@ export default function Sidebar() {
                 </ListItemIcon>
                 <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
-            </ListItem>
-          ))}
+              
+            </ListItem> 
+            )
+          }
+            
+                       
+            
+           
+          )}
         </List>
         <Divider />
         <List>
           {['Inbox', 'Trash', 'Logout'].map((text, index) => (
             <ListItem key={text} disablePadding sx={{ display: 'block' }}>
               <ListItemButton
-              onClick={()=>navigate(`/${text.toLowerCase()}`)}
+              onClick={()=>text!=="Logout"?navigate(`/${text.toLowerCase()}`):handleLogOut()}
                 sx={{
                   minHeight: 48,
                   justifyContent: open ? 'initial' : 'center',
@@ -172,6 +206,9 @@ export default function Sidebar() {
                 }}
               >
                 <ListItemIcon
+                
+                             
+                
                   sx={{
                     minWidth: 0,
                     mr: open ? 3 : 'auto',
@@ -184,6 +221,12 @@ export default function Sidebar() {
               </ListItemButton>
             </ListItem>
           ))}
+         
+
+
+
+
+          
         </List>
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>

@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { loginInterface } from "./authInterface";
 
 const initialState:loginInterface={
-    isLogedIn:false,
+    isLoggedIn:false,
     jwt:'',
     role:''
 }
@@ -12,12 +12,13 @@ const authSlice=createSlice({
     initialState,
     reducers:{
         loggedin:(state,data)=>{
-            state.isLogedIn=true;
+            state.isLoggedIn=true;
             state.jwt=data.payload.token;
             state.role=data.payload.role
         },
         logout:(state)=>{
-            state.isLogedIn=false,
+            console.log(state)
+            state.isLoggedIn=false,
             state.jwt=''
             state.role=''
         }

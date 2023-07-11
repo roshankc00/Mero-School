@@ -9,19 +9,27 @@ import cors from 'cors'
 import allRoute from './routes/index'
 import {passportInitialize} from "./middlewares/passport.middleware";
 
+
+
 // uncaughtException error handler
 process.on("uncaughtException", (error: any) => {
   console.log(` Error:${error.message}`);
   console.log("shuttting down the server due to uncaughtException ");
   process.exit(1);
 });
+
+
  
 // rest variables
 const app = express();
 const PORT = env.PORT || 7000;
 
+
+
 // connecting to the database
 connectDb();
+
+
 
 
 app.use(expressSession({ 
@@ -33,12 +41,17 @@ app.use(expressSession({
   })
 );
 
+
+
 // middlewares 
 app.use(express.json());
+app.use(express.urlencoded({extended:true}))
 passportInitialize();
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(cors())
+
+
 
 
 // routes
@@ -48,7 +61,7 @@ app.use(errorHandler);
 app.use(notFound);
 
 
-
+// listening to the server 
 const server = app.listen(PORT, () => {
   console.log(`Listening at the port ${PORT}`);
 });

@@ -8,6 +8,7 @@ import { deleteLocalFile } from '../utils/deleteLocalFile';
 import Section from '../models/sectionModel';
 import mongoose from 'mongoose';
 
+// create section
 export const createSection = asyncHandler(async (req: any, res: Response) => {
     try {
         let {title,lectures}=req.body;
@@ -35,7 +36,7 @@ export const createSection = asyncHandler(async (req: any, res: Response) => {
 })
 
 
-// single lecture 
+// single section
 export const getASinglesection=asyncHandler(async(req:Request,res:Response)=>{
     try {
       const id =req.params.id
@@ -58,7 +59,7 @@ export const getASinglesection=asyncHandler(async(req:Request,res:Response)=>{
 })
 
 
-// get all the lectures 
+// get all the sections 
 export const getAllSections=asyncHandler(async(req:Request,res:Response)=>{
     try {
         const sections=await Section.find({})
@@ -74,3 +75,6 @@ export const getAllSections=asyncHandler(async(req:Request,res:Response)=>{
         
     }
 })
+
+
+//

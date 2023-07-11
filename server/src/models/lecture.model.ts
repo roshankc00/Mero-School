@@ -15,6 +15,9 @@ const lectureSchema = new mongoose.Schema<LectureInteface>(
             type: Number,
             required: true
         },
+        publicId:{
+            type:String
+        },
         lectureUrl: {
             type: String
         }

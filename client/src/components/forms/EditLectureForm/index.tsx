@@ -1,10 +1,11 @@
 import { object, string, mixed, number } from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { getData, postDataWithHeader } from "../../../services/axios.service";
+import { getData, postDataWithHeader, updateDataWithHeader } from '../../../services/axios.service';
 import { useSelector } from "react-redux";
 import { errorToast, sucessToast } from "../../../services/toastify.service";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import Lecture from '../../../../../server/src/models/lecture.model';
 
 const EditLectureForm = () => {
     const [lecture, setlecture] = useState<any>({})
@@ -14,34 +15,38 @@ const EditLectureForm = () => {
   const token=useSelector((e:any)=>{
     return e.auth.jwt
   })
+
+
+
   const getLecture=async()=>{
 const   response=await getData(`lecture/${id}`,token)
    if(response.sucess){
-    setlecture(response.lecture)
+    setlecture(response)
    }
   }
+
   useEffect(()=>{
     getLecture()  
-    
-  },[lecture])
+    // console.log(lecture.lecture,"useeffect")
+  },[])
 
-
-
+  
+  
   const handleSubmit = async(values: any, { setSubmitting }: any) => {
     try {
+      console.log(values)
+      const isVideoEdited:boolean= values.file!==null;
       const formData=new FormData();
       formData.append("title",values.title)
       formData.append("duration",values.duration)
-      formData.append("file",values.file)
       formData.append("content",values.content)
-      const response=await postDataWithHeader('lecture',formData,token)
-      console.log(response,"thanlks")
-      if(response.sucess){
-        sucessToast(response.message)
-        navigate('/lecture')
-      }else{
-        errorToast(response.message)
-      }       
+      console.log(typeof values.duration,"duration")
+      if(isVideoEdited){
+        formData.append("file",values.file)
+      }
+      // formData.append('isVideoEdited',isVideoEdited)
+      // const response=await updateDataWithHeader(`lecture/${id}`,formData,token)
+      // console.log(response) 
       setSubmitting(false)                      
     } catch (error:any) {
       console.log(error)
@@ -50,13 +55,9 @@ const   response=await getData(`lecture/${id}`,token)
   };
 
 
-  // initial value
-  const initialValue = {
-    title: lecture.title,
-    content: lecture.content,
-    duration: lecture.duration,
-    file: null,
-  };
+  
+
+
 
 
   // validation
@@ -67,19 +68,31 @@ const   response=await getData(`lecture/${id}`,token)
     file: mixed().notRequired(),
   });
 
+
+  const handlerRemoveVedio=(setFieldValue:any)=>{
+    setFieldValue('file',null)
+
+    setremoveVedio(false);
+  }
   
   return (
     <div className="max-w-md mx-auto">
       <h2 className="text-bold text-3xl text-red-800 my-5"> Edit Lecture</h2>
-      {
-        lecture&&
-  
+ 
+       {lecture.sucess&&
+
+       
       <Formik
-        initialValues={initialValue}
+        initialValues={{
+          title: lecture.lecture.title,
+          content: lecture.lecture.content,
+          duration: lecture.lecture.duration,
+          file: null,
+        }}       
         validationSchema={lectureValidationSchema}
         onSubmit={handleSubmit}
       >
-        {({ isSubmitting,setFieldValue}: any) => {
+        {({values, isSubmitting,setFieldValue}: any) => {
           return (
             <Form>
               <div className="mb-4">
@@ -89,7 +102,7 @@ const   response=await getData(`lecture/${id}`,token)
                 <Field
                   type="text"
                   id="title"
-                  value={lecture?.title}
+                  value={values.title}
                   name="title"
                   className="w-full border px-4 py-2"
                 ></Field>
@@ -106,7 +119,7 @@ const   response=await getData(`lecture/${id}`,token)
                 <Field
                   type="textarea"
                   id="content"
-                  value={lecture.content }
+                  value={values.content }
                   name="content"
                   className="w-full border px-4 py-2"
                 ></Field>
@@ -123,7 +136,7 @@ const   response=await getData(`lecture/${id}`,token)
                 <Field
                   type="number"
                   id="duration"
-                  value={lecture.duration}
+                  value={values.duration}
                   name="duration"
                   className="w-full border px-4 py-2"
                 ></Field>
@@ -139,20 +152,18 @@ const   response=await getData(`lecture/${id}`,token)
                 <label htmlFor="file" className="block mb-2">
                   Video
                 </label>
-                {removeVedio &&
+                {removeVedio?
                 <>
                 <video src={lecture.lectureUrl} controls width='250' height='250'></video>
-                <button className='bg-blue-400 text-white p-2 1 mt-2 rounded-md' onClick={(e)=>{
+                <button className='bg-blue-800 text-white p-2 1 mt-2 rounded-md' onClick={(e)=>{
                   e.preventDefault();
-                  setremoveVedio(false)
-                  setFieldValue('file',null)
-                }}>Remove Vedion</button>
-                </>
-                }
-                {
+                  handlerRemoveVedio(setFieldValue);
 
-                }
-                <input
+                }}>Remove Vedio</button>
+                </>:
+
+                <>
+                  <input
                   type="file"
                   name="file"
                   id="file"
@@ -162,11 +173,15 @@ const   response=await getData(`lecture/${id}`,token)
                   className="w-full border px-4 py-2"
                   
                 ></input>
+                
+              </>
+                }
                
-              </div>
-            
+              
+               
+              </div>          
 
-              <button type="submit" className="bg-blue-500 hover:bg-blue-600 p-2 text-white fw-fw-bolder">
+              <button type="submit" className="bg-blue-500 rounded-md hover:bg-blue-600 p-2 text-white fw-fw-bolder">
                 {isSubmitting ? "Editing...." :"Edit lecture"}          
               </button>
             </Form>

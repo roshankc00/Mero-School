@@ -141,11 +141,15 @@ export const deleteCourse=asyncHandler(async(req,res)=>{
     if(!course){
       throw new Error('no course exists with this id');
     }else{
+
       const sections=await Section.find({_id:{$in:course.sections}})
+      // deleting all the lectures associated with this course
       sections.map(async(section)=>{
        const lectures= await Lecture.deleteMany({_id:{$in:section.lectures}})       
       })
+      // deleting all the sections associated with the courses 
       await Section.deleteMany({_id:{$in:course.sections}})
+      // deleting the course 
       await Course.findByIdAndDelete(id)            
     }
 
@@ -185,3 +189,24 @@ export const getASingleCourse=asyncHandler(async(req,res)=>{
 })
 
 
+export const editCourse=asyncHandler(async(req:Request,res:Response)=>{
+  try {
+    const id=req.params.id
+    validateMongodbId(id)
+    const course=await Course.findById(id)
+    if(!course){
+      throw new Error('course not found')
+    }else{
+      await Course.findByIdAndUpdate(id,req.body,{new:true});
+      res.status(200).json({
+        sucess:true,
+        message:"course updated sucessfully"
+      })
+    }
+    
+  } catch (error:any) {
+    throw new Error(error)
+
+  }
+
+})

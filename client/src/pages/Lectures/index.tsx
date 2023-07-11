@@ -9,8 +9,8 @@ import { errorToast, loadingToast, sucessToast } from "../../services/toastify.s
 
 const Lectures = () => {
   const [lectures, setlectures] = useState([])
-  const token=useSelector((state:any)=>{
-    return state.auth.jwt
+  const {jwt:token,role}=useSelector((state:any)=>{
+    return state.auth
   })
     const navigate=useNavigate()
 
@@ -65,7 +65,11 @@ const Lectures = () => {
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between">
       <Typography variant="h3" gutterBottom> Lectures </Typography>
-    <Button variant="contained" className='mb-4' onClick={()=>navigate('/addlectureform')}>Add lectures</Button>
+
+      {role==="admin"&&
+
+        <Button variant="contained" className='mb-4' onClick={()=>navigate('/addlectureform')}>Add lectures</Button>
+      }
       </div>
     <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"> 
   
@@ -75,8 +79,11 @@ const Lectures = () => {
       <Card key={el._id}>
       <CardContent>
         <div className="flex justify-between items-center mb-2">
+
           <Typography variant="h6"> {el.title}</Typography>
-          <div className="">
+          {role==="admin"&&
+          <div className="">          
+            
         <IconButton color="primary" className="mr-2" onClick={()=>updatehandler(el._id)}>
           <EditRoundedIcon/>
         </IconButton>
@@ -84,6 +91,8 @@ const Lectures = () => {
           <DeleteIcon/>
         </IconButton>
           </div>
+            
+          }
         </div>
         <Typography variant="subtitle1">
           Duration:{el.duration} hrs

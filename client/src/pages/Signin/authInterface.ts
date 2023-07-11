@@ -1,5 +1,5 @@
 export interface loginInterface {
-    isLogedIn:boolean,
+    isLoggedIn:boolean,
     jwt:string,
     role:string
 }

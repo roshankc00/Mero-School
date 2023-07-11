@@ -12,28 +12,35 @@ import Courses from './pages/Courses'
 import AddCourseForm from './components/forms/AddCourseForm'
 import EditLectureForm from './components/forms/EditLectureForm'
 import SecureRoute from './routes/SecureRoute'
-import UmMatchedRoutePage from './pages/UmMatchedRoutePage'
+import UmMatchedRoutePage from './pages/unmatchedRoutePage'
+import AccessDenied from './pages/AccesDenied'
+import Cart from './pages/Cart'
 function App() {
 
   return (
     <>
     <Routes>
       <Route path='/' element={<SignIn/>}/>
-      <Route path='/signup' element={<SignUp/>}/>   
-      {/* <Route path='/' element={<SecureRoute/>}> */}
+      <Route path='/signup' element={<SignUp/>}/> 
+
+      <Route path='/' element={<SecureRoute/>}>
       <Route path='/' element={<Sidebar/>}>        
+      <Route path='/' element={<AccessDenied/>}>
+
       <Route path='/addlectureform' element={<AddLectureForm/>}/>
       <Route path='/addcourseform' element={<AddCourseForm/>}/>
-      <Route path='/lecture' element={<Lectures/>}/>
       <Route path='/lecture/:id' element={<EditLectureForm/>}/>
+      <Route path='/lecture' element={<Lectures/>}/>
       <Route path='/section' element={<Sections/>}/>
-      <Route path='/course' element={<Courses/>}/>
-      <Route path='/dashboard' element={<Dashboard/>}/>
       </Route>
-      {/* </Route> */}
+
+      <Route path='/courses' element={<Courses/>}/>
+      <Route path='/dashboard' element={<Dashboard/>}/>
+      <Route path='/cart' element={<Cart/>}/>
+      </Route>
+      </Route>
       <Route path='*' element={<UmMatchedRoutePage/>}/>
 
-      {/* </Route> */}
     </Routes>
     <ToastContainer />
     </>

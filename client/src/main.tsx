@@ -8,12 +8,13 @@ import 'react-toastify/dist/ReactToastify.css';
 import { BrowserRouter } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { PersistGate } from 'redux-persist/integration/react'
-// import { ErrorBoundary } from "react-error-boundary";
+import { ErrorBoundary } from "react-error-boundary";
+import ErrorBoundaryHandler from './pages/ErrorBoundry/index.tsx';
 
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    {/* <ErrorBoundary fallback={<ErrorBoundary/>}> */}
+    <ErrorBoundary fallback={<ErrorBoundaryHandler/>}>
 
     <Provider store={store}>      
     <PersistGate loading={null} persistor={persistor}>
@@ -26,6 +27,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     </BrowserRouter>
     </PersistGate>
     </Provider>
-    {/* </ErrorBoundary> */}
+
+    </ErrorBoundary>
   </React.StrictMode>
 )

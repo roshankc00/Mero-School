@@ -24,11 +24,13 @@ export const createLecture = asyncHandler(async (req: any, res: Response) => {
               });
           }
         let lectureUrl=result.secure_url;
+        let publicId=result.public_id;
         const lecture=await Lecture.create({
             title,
             content,
             duration,
-            lectureUrl
+            lectureUrl,
+            publicId
         })
 
           deleteLocalFile(req.file.path)
@@ -98,7 +100,9 @@ export const deleteLecture=asyncHandler(async(req:Request,res:Response)=>{
     if(!lecture){
       throw new Error("no lecture with this id exists")
     }
+    const deleteImage=await cloudinary.v2.uploader.destroy(lecture?.publicId)
   await Lecture.findByIdAndDelete(id);
+
     res.status(200).json({
       sucess:true,
       message:"lecture deleted sucessfully"
@@ -112,21 +116,25 @@ export const deleteLecture=asyncHandler(async(req:Request,res:Response)=>{
 
 
 
+
+
 // update the lecture
 export const editLecture=asyncHandler(async(req:any,res:Response):Promise<void>=>{
   try {
     const id=req.params.id
     validateMongodbId(id)
-    const {isVideoEdited}=req.body;
-    console.log(isVideoEdited)
+    let  {isVideoEdited}=req.body;
     const lecture=await Lecture.findById(id);
-    console.log(lecture)
+   req.body.isVideoEdited=Boolean(req.body.isVideoEdited)
+   req.body.duration=Number(req.body.duration)  
     let  updatedLecture;
+    console.log(typeof req.body.duration,"duration")
     if(!lecture){
       throw new Error('lecture not found')
-    }else{
-      if(isVideoEdited){
-        console.log("me")
+    }
+    else{
+      if(req.body.isVideoEdited){
+        const destroy=await cloudinary.v2.uploader.destroy(lecture?.publicId)
         const upload=await cloudinary.v2.uploader.upload(req?.file?.path);
         const lectureUrl=upload.secure_url;
         req.body.lectureUrl=lectureUrl;
@@ -135,22 +143,23 @@ export const editLecture=asyncHandler(async(req:any,res:Response):Promise<void>=
           $set:req.body
         },{new:true})    
       }else{
-       updatedLecture=await Lecture.findByIdAndUpdate(id,{
+        updatedLecture=await Lecture.findByIdAndUpdate(id,{
           $set:req.body
         },{new:true})
       }
     }
   
+
     res.status(200).json({
       sucess:true,
       message:"lecture updated sucessfullly",
       updatedLecture
      })
-
-
-    
+   
   } catch (error:any) {
     throw new Error(error)
     
   }
 })
+
+
