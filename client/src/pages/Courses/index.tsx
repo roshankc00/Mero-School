@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { errorToast, sucessToast } from "../../services/toastify.service";
-import { addToCart } from "../Cart/cartslice";
+import { addToCart } from "../Cart/cartSlice";
 
 const Courses = () => {
   const navigate=useNavigate()

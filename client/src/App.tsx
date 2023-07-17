@@ -15,6 +15,8 @@ import SecureRoute from './routes/SecureRoute'
 import UmMatchedRoutePage from './pages/unmatchedRoutePage'
 import AccessDenied from './pages/AccesDenied'
 import Cart from './pages/Cart'
+import PrivateRoute from './routes/privateRoute'
+import PaymentSucessPage from './pages/SucessPage'
 function App() {
 
   return (
@@ -24,8 +26,9 @@ function App() {
       <Route path='/signup' element={<SignUp/>}/> 
 
       <Route path='/' element={<SecureRoute/>}>
+
       <Route path='/' element={<Sidebar/>}>        
-      <Route path='/' element={<AccessDenied/>}>
+      <Route path='/' element={<PrivateRoute/>}>
 
       <Route path='/addlectureform' element={<AddLectureForm/>}/>
       <Route path='/addcourseform' element={<AddCourseForm/>}/>
@@ -34,9 +37,10 @@ function App() {
       <Route path='/section' element={<Sections/>}/>
       </Route>
 
-      <Route path='/courses' element={<Courses/>}/>
+      <Route path='/course' element={<Courses/>}/>
       <Route path='/dashboard' element={<Dashboard/>}/>
       <Route path='/cart' element={<Cart/>}/>
+      <Route path='/success' element={<PaymentSucessPage/>}/>
       </Route>
       </Route>
       <Route path='*' element={<UmMatchedRoutePage/>}/>

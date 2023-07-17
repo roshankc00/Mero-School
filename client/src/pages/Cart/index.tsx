@@ -1,12 +1,40 @@
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { Link } from "react-router-dom"
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { Button, Card, CardContent } from "@mui/material";
+import Paybtn from "./Paybtn";
+import { addToCart, clearCart, decreaseCart, getTotal, removeFromCart } from "./cartSlice";
+import { useEffect } from "react";
 const Cart = () => {
+  const dispatch=useDispatch();
     const cart=useSelector((state:any)=>{
         return state.cart
     })
-    console.log(cart);
+
+    useEffect(()=>{
+      dispatch(getTotal())
+  },[dispatch,cart])
+
+
+    const handleClearCart=()=>{
+      dispatch(clearCart())
+    }
+    const handleIncreaseProductQuantity=(course:any)=>{
+      dispatch(addToCart(course));
+
+
+    }
+    const handleDecreaseProductQuantity=(course:any)=>{
+      dispatch(decreaseCart(course))
+
+
+    }
+    const handleRemoveFromCart=(course:any)=>{
+      dispatch(removeFromCart(course))
+
+
+    }
+
   return (
 
     <div className="cart-container">
@@ -21,7 +49,7 @@ const Cart = () => {
                 <p>Your Cart Is Empty</p>
                 <div className="continue-shopping">
 
-                <Link to='/courses' className="bg-green-500 text-black p-3 rounded-md">
+                <Link to='/course' className="bg-green-500 text-black p-3 rounded-md">
                     <ShoppingCartIcon/>
                     
                     <span className="text-black">Start Shopping</span>
@@ -43,7 +71,7 @@ const Cart = () => {
                 <h3 className="">Total</h3>                
               </div>
               <div className="cart-items">
-                {cart.cartItems.length>0 &&
+                {cart?.cartItems?.length>0 &&
                 cart.cartItems.map((cartItem:any)=>{
                     return(
                         <div key={cartItem._id} className="cart-item">
@@ -51,17 +79,21 @@ const Cart = () => {
                                 <h3>title : {cartItem.title}</h3>
                                 <h3>description : {cartItem.description}</h3>
                                 <Button className="m-2" variant='contained' onClick={(e)=>{
-                                    e.preventDefault()
+                                    handleRemoveFromCart(cartItem)
 
-                                }}>Remove</Button>
+                                }} >Remove</Button>
                             </div>
                             <div className="cart-product-price">
                                 ${cartItem.price}
                             </div>
                             <div className="cart-product-quantity">
-                                    <button>+</button>
+                                    <button onClick={(e)=>{
+                                      handleIncreaseProductQuantity(cartItem);
+                                    }}>+</button>
                                     <div className="count">{cartItem.cartQuantity}</div>
-                                    <button>-</button>
+                                    <button onClick={(e)=>{
+                                      handleDecreaseProductQuantity(cartItem)
+                                    }}>-</button>
                                 </div>
                                 <div className="cart-product-price">
                                    $ {
@@ -69,17 +101,26 @@ const Cart = () => {
                                         
                                     }
                                      </div>
-
-
-
-
-
+                                     
                         </div>
 
                     )
-                })
-                
-                }
+                })}
+                <div className="cart-summary"> 
+                <button className="clear-btn" onClick={(e)=>{
+                  e.preventDefault();
+                  handleClearCart();
+                }}> clear Cart</button>
+                <div className="cart-checkout">
+                  <div className="subtotal">
+                    <span>SubTotal</span>
+                    <span className="amount">${cart.cartTotalAmount}</span>
+                  </div>
+                  <Paybtn cartItems={cart.cartItems}/>
+
+                </div>
+            
+                </div>
 
 
 

@@ -8,28 +8,38 @@ const stripe=new Stripe(env.STRIPE_API_KEY,{
 const URL=env.CLIENT_URL
 const YOUR_DOMAIN = 'http://localhost:4242';
 router.post('/create-checkout-session', async (req:Request, res:Response) => {
-    const session = await stripe.checkout.sessions.create({
-      line_items: [
-        {
-          // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-          price_data:{
-            currency:'usd',
-            unit_amount:2000,
-            product_data:{
-                name:"Frontend web Development"
-            },
-          },
-          quantity: 1,
+  
+  const line_items=req.body.cartItems.map((item:any)=>{
+    return {
+       price_data:{
+        currency:'usd',
+        product_data:{
+          name:item.title,
+          metadata:{
+            id:item._id
+          }
+
         },
-      ],
+        unit_amount:item.price*100,       
+        
+      },
+      quantity:item?.cartQuantity
+    }
+   })
+
+    const session = await stripe.checkout.sessions.create({
+    line_items,
       mode: 'payment',
-      success_url: `${URL}/cart/sucess`,
-      cancel_url: `${YOUR_DOMAIN}/cart`,
+      success_url: `${URL}/success`,
+      cancel_url: `${URL}/cart`,
     });
 
-    res.json({
-        data:session.id
-    })
+if(session){
+  res.status(200).json({
+    status:true,
+    data:session.url
+})
+}
   
   });
-  export default router
+  export default router 

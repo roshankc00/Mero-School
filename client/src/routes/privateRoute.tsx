@@ -1,12 +1,18 @@
 import { useSelector } from "react-redux"
-import React from "react"
-const privateRoute = () => {
-    const {role}=useSelector((state:any)=>{
-        return state.auth
-    })
+import { Navigate, Outlet } from "react-router-dom"
+
+const PrivateRoute = () => {
+    const role=useSelector((state:any)=>{
+        return state.auth.role
+      })
+      console.log(role)
   return (
-    <div>privateRoute</div>
+    <div>
+        {
+            role==="admin"?<Outlet/>:<Navigate to={'/'} />
+        }
+    </div>
   )
 }
 
-export default privateRoute
+export default PrivateRoute      
