@@ -21,5 +21,3 @@ router.use('/stripe',stripeRoute)
 export default router;
 
 
-
-// ma frontendd garcu bhnara aasah nagara la 

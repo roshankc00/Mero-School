@@ -17,6 +17,7 @@ import AccessDenied from './pages/AccesDenied'
 import Cart from './pages/Cart'
 import PrivateRoute from './routes/privateRoute'
 import PaymentSucessPage from './pages/SucessPage'
+import InboxMessage from './pages/Inbox'
 function App() {
 
   return (
@@ -38,6 +39,7 @@ function App() {
       </Route>
 
       <Route path='/course' element={<Courses/>}/>
+      <Route path='/inbox' element={<InboxMessage/>}/>
       <Route path='/dashboard' element={<Dashboard/>}/>
       <Route path='/cart' element={<Cart/>}/>
       <Route path='/success' element={<PaymentSucessPage/>}/>
