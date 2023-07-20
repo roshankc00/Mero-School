@@ -42,7 +42,7 @@ export const registerUser =asyncHandler(async(req:Request,res:Response)=>{
 // login the user
 export const loginUser=asyncHandler(async(req:Request,res:Response)=>{
     try {
-        const {email,password}=req.body
+        const {email,password,fcm}=req.body
         const user=await User.findOne({email})
         if(!user){
             throw new Error("no user  exists")
@@ -57,7 +57,8 @@ export const loginUser=asyncHandler(async(req:Request,res:Response)=>{
         const token=jwt.sign(tokenData,env.SECRET)
         const updatedUser=await User.findOneAndUpdate({email},{
             $set :{
-                jwt:token
+                jwt:token,
+                fcm
             }
         });
 

@@ -9,6 +9,8 @@ import cloudinary from "../config/cloudinary.config";
 import { deleteLocalFile } from "../utils/deleteLocalFile";
 import { error } from "console";
 import { parseArgs } from "util";
+import User from "../models/user.model";
+import sendNotification from "../firebase/sendNotification";
 
 export const createCourse = asyncHandler(async (req: any, res: Response) => {
   const { title, description, price, duration, sections, categories, content } =
@@ -94,6 +96,16 @@ export const createCourse = asyncHandler(async (req: any, res: Response) => {
 
     } 
   }
+   const users=await User.find({roles:'student'});
+   users.forEach((user)=>{
+    if(user.fcm){
+      console.log(user)
+      sendNotification(user.fcm,`There is a new course ${course.title} available at MeroSchool`)
+    }
+
+   })
+
+
      res.status(200).json({
         sucess:true,
         message:"course created sucessfully",

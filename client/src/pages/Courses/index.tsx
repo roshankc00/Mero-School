@@ -147,3 +147,6 @@ const handleAddToCart=(product:any)=>{
   )
 }
 export default Courses  
+
+
+// http methods are half duplex 

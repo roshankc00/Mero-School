@@ -15,17 +15,35 @@ import { useNavigate } from 'react-router-dom';
 import { errorToast, sucessToast } from '../../services/toastify.service';
 import {useDispatch} from 'react-redux'
 import { loggedin } from './authSlice';
+import { getToken } from "firebase/messaging";
+import messaging from '../../config/firbase.config';
+
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
 export default function SignIn() {
-  const [data,setdata]=useState({})
+  const [data,setdata]=useState<any>({})
   const dispatch=useDispatch()
   const navigate=useNavigate()
+
+
   const handleSubmit = async(event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log(data)
-    const response=await postData('user/login',data)
+
+   
+    const token = await getToken(messaging, {
+      vapidKey: import.meta.env.VITE_FIREBASE_VALID_KEY,
+    });
+
+    const body={
+      email:data.email,
+      password:data.password,
+      fcm:token
+
+
+    }
+
+    const response=await postData('user/login',body)
     if(response.sucess){
       dispatch (loggedin(response.data))
         navigate('/dashboard')

@@ -21,7 +21,7 @@ const Chat = ({ socket, room, username }: any) => {
             room,
             author:username,
             message:currentMessage,
-            time:new Date(Date.now()).getHours()+ ':' +new Date(Date.now()).getMinutes()
+            time:new Date(Date.now()).getHours()+ ':' +new Date(Date.now()).getMinutes() + ':' +new Date(Date.now()).getSeconds()
 
         };
         await socket.emit("send_message",messageData)
@@ -29,13 +29,14 @@ const Chat = ({ socket, room, username }: any) => {
         setcurrentMessage("")
     }
   }
+  
   return (
-    <div>
+    <div >
       <div className="chat-window">
         <div className="bg-gray-800 rounded-t-lg cursor pointer">
           <p className="text-white font-blod py-2 px-3">Live chat</p>
           <div className="chat-body border border-gray-800 rounded-b-lg bg-white relative">
-            <ScrollToBottom className="h-50 m-auto w-['300px'] overflow-y-scroll overflow-x-hidden">
+            <ScrollToBottom className=" m-auto overflow-y-scroll overflow-x-hidden">
               {messageList.map((messageContent: any) => {
                 return (
                   <div
@@ -82,9 +83,7 @@ const Chat = ({ socket, room, username }: any) => {
                 );
               })}
             </ScrollToBottom>
-          </div>
-        </div>
-        <div className="chat-footer">
+            <div className="chat-footer">
             <input type="text" 
             className="w-full h-full p-2 text-xl  border-0  outline-none cursor-pointer"
             placeholder="enter the message here"
@@ -99,6 +98,9 @@ const Chat = ({ socket, room, username }: any) => {
                 <SendIcon/>
             </button>
         </div>
+          </div>
+        </div>
+     
       </div>
     </div>
   );

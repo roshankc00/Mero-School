@@ -11,6 +11,7 @@ import {passportInitialize} from "./middlewares/passport.middleware";
 import { Server,Server as SocketIOServer } from "socket.io";
 
 import http from 'http'
+import initializeFirebaseApp from "./firebase/initializeFirebase";
 
 
 
@@ -29,6 +30,8 @@ const app = express();
 const server =http.createServer(app);
 app.use(cors())
 
+
+
 // initialiizng the socket io
 const io:SocketIOServer=new Server(server,{
   cors:{
@@ -37,6 +40,8 @@ const io:SocketIOServer=new Server(server,{
 })
 
 connectDb();
+initializeFirebaseApp()
+
 
 
 
@@ -79,7 +84,6 @@ io.on('connection',(socket)=>{
   // data refers to the room id sent from server 
   socket.on('join_room',(data)=>{
     socket.join(data);
-    console.log("wow")
     console.log(` user with an id ${socket.id} joined the room ${data}`)
 
   })
@@ -96,6 +100,8 @@ io.on('connection',(socket)=>{
 })
 
 io.listen(9000)
+
+// connnect vayeu bhna join_room  send mssge 
 
 
 

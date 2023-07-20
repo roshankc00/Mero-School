@@ -21,3 +21,4 @@ router.use('/stripe',stripeRoute)
 export default router;
 
 
+// httpt-rest/ajax 

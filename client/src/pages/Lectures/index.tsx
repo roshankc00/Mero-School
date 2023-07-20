@@ -111,14 +111,7 @@ const Lectures = () => {
   })
 
 }
-
-   
-
-    
- 
-    
      </div>
-
     </div>
     </>
     
